@@ -61,6 +61,8 @@ for c, r in lite["conditions"].items():
 c783 = lambda c: b2("783", c)["mn9_rate_hz"]["contra"]["mean"]
 s783 = lambda c: b2("783", c)
 k = smoke["checks"]
+_smoke_x = float(k["sugar_after_8s"]["engine"].split("\u00d7")[0]); _ach = [r["achieved_x_real_time"] for r in bspeed["runs"].values()]
+_lo, _hi = min([_smoke_x] + _ach), max(_ach)
 _active = []
 for _c in sorted(v783["conditions"]):
     _m = v783["conditions"][_c]["mn9_contra"]
@@ -196,7 +198,7 @@ load average {bspeed['machine']['loadavg_at_start'][0]:.0f} on {bspeed['machine'
 |---|---|---|
 {chr(10).join(f"| {c} | {r['achieved_x_real_time']:.2f}x | {r['engine_readout_median']}x / {r['engine_readout_max']}x |" for c, r in bspeed['runs'].items())}
 
-So the page sustains roughly real time or better under load, well above the 0.1x playback it uses by default, and a quiet machine should do better.
+So under load the page sustained {_lo:.1f}x to {_hi:.1f}x real time (the low end is the single readout of the smoke test), well above the 0.1x playback it uses by default and the brief's 0.25x target; a quiet machine should do better.
 `tools/smoke_page.mjs` / `results/page_smoke.json`: {k['headless_fps_during_cascade']:.0f} fps in headless Edge during a cascade; sugar gave MN9 {k['sugar_after_8s']['mn9_hz']:.0f} Hz after ~8 s at 1x playback
 (engine readout "{k['sugar_after_8s']['engine']}" at that moment), sugar + bitter gave {k['sugar_plus_bitter_after_7s']['mn9_hz']:.0f} Hz, no console errors, the graph in the page had N = {k['engine_graph']['N']:,} neurons and E = {k['engine_graph']['E']:,} connections, no horizontal scroll at 375 px.
 

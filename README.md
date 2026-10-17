@@ -181,9 +181,9 @@ load average 12 on 10 cores at the start (the machine was shared with other jobs
 | water | 1.12x | 1.1x / 1.4x |
 | sugar+bitter | 1.42x | 1.4x / 1.6x |
 
-So the page sustains roughly real time or better under load, well above the 0.1x playback it uses by default, and a quiet machine should do better.
-`tools/smoke_page.mjs` / `results/page_smoke.json`: 51 fps in headless Edge during a cascade; sugar gave MN9 68 Hz after ~8 s at 1x playback
-(engine readout "0.9× real time · playing 1×" at that moment), sugar + bitter gave 0 Hz, no console errors, the graph in the page had N = 138,639 neurons and E = 15,091,983 connections, no horizontal scroll at 375 px.
+So under load the page sustained 0.4x to 1.4x real time (the low end is the single readout of the smoke test), well above the 0.1x playback it uses by default and the brief's 0.25x target; a quiet machine should do better.
+`tools/smoke_page.mjs` / `results/page_smoke.json`: 55 fps in headless Edge during a cascade; sugar gave MN9 67 Hz after ~8 s at 1x playback
+(engine readout "0.4× real time · playing 1×" at that moment), sugar + bitter gave 0 Hz, no console errors, the graph in the page had N = 138,639 neurons and E = 15,091,983 connections, no horizontal scroll at 375 px.
 
 ### The lite graph (optional)
 

@@ -1,19 +1,19 @@
 {
  "checks": {
-  "load_to_ready_ms": 1293,
+  "load_to_ready_ms": 5283,
   "engine_graph": {
    "N": 138639,
    "E": 15091983,
    "graphBytes": 42419642
   },
   "webgl_canvas": true,
-  "headless_fps_during_cascade": 50.7,
+  "headless_fps_during_cascade": 55,
   "sugar_after_8s": {
-   "mn9_hz": 68,
-   "sim_time": "6.979 s",
-   "spikes_per_s": "10,104",
-   "firing": "306",
-   "engine": "0.9× real time · playing 1×",
+   "mn9_hz": 67,
+   "sim_time": "3.886 s",
+   "spikes_per_s": "9,552",
+   "firing": "250",
+   "engine": "0.4× real time · playing 1×",
    "ref": "Brian2 68.7 ± 4.8 Hz"
   },
   "sugar_plus_bitter_after_7s": {
@@ -23,7 +23,7 @@
   "drawer_table_rows": 11,
   "drawer_open": true,
   "phone_no_horizontal_scroll": true,
-  "phone_mn9_hz": 64
+  "phone_mn9_hz": 76
  },
  "errors": [],
  "pass": true
