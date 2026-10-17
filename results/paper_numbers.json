@@ -1,0 +1,187 @@
+{
+ "paper_text": {
+  "source": "Shiu et al., Nature 634:210-219 (2024), doi:10.1038/s41586-024-07763-9; text quoted from the open-access full text (PMC11446845)",
+  "robust_activation": "modelling using the correct connectome results in robust activation of MN9 in 100% of simulations when sugar-sensing neurons are activated at 100 Hz (1 of 100 shuffled simulations did)",
+  "responding_neurons": {
+   "of_total_neurons_modelled": 127400,
+   "at_10Hz": 45,
+   "at_200Hz": 455,
+   "definition": "neurons with greater than 0 Hz firing (v630)"
+  },
+  "calibration": "W_syn chosen such that sugar GRNs at 100 Hz give roughly 80% of maximal MN9 firing",
+  "protocol": "30 simulations of 1,000 ms per experiment; Poisson-distributed input to the GRNs",
+  "qualitative": [
+   "unilateral sugar GRN activation drives the contralateral MN9 more strongly than the ipsilateral MN9",
+   "bitter GRN activity added to sugar activation inhibits MN6 and MN9; strong bitter eliminates MN9 firing to strong sugar, strong Ir94e does not",
+   "water and sugar GRNs act synergistically on MN9"
+  ],
+  "equal_mn9_40Hz": {
+   "sugar_pathway_neurons": 377,
+   "water_pathway_neurons": 391
+  }
+ },
+ "authors_shipped_outputs_v630": {
+  "sugar_200": {
+   "file": "sugarR.parquet",
+   "n_trials": 30,
+   "grn_rate_hz": 199.0,
+   "n_neurons_any_spike": 448,
+   "spikes_per_trial": 17052.2,
+   "mn9": {
+    "contra": {
+     "mean": 93.26666666666667,
+     "std": 3.1510139461590594,
+     "per_trial": [
+      86.0,
+      94.0,
+      90.0,
+      89.0,
+      95.0,
+      91.0,
+      95.0,
+      97.0,
+      93.0,
+      97.0,
+      89.0,
+      88.0,
+      89.0,
+      94.0,
+      90.0,
+      95.0,
+      91.0,
+      95.0,
+      94.0,
+      99.0,
+      97.0,
+      96.0,
+      94.0,
+      94.0,
+      93.0,
+      93.0,
+      96.0,
+      91.0,
+      97.0,
+      96.0
+     ]
+    },
+    "ipsi": {
+     "mean": 61.8,
+     "std": 4.174525921187539,
+     "per_trial": [
+      63.0,
+      62.0,
+      63.0,
+      64.0,
+      63.0,
+      57.0,
+      68.0,
+      62.0,
+      60.0,
+      59.0,
+      63.0,
+      54.0,
+      63.0,
+      65.0,
+      57.0,
+      63.0,
+      59.0,
+      54.0,
+      71.0,
+      65.0,
+      56.0,
+      61.0,
+      62.0,
+      59.0,
+      65.0,
+      59.0,
+      63.0,
+      67.0,
+      57.0,
+      70.0
+     ]
+    }
+   }
+  },
+  "sugar_100": {
+   "file": "sugarR_100Hz.parquet",
+   "n_trials": 30,
+   "grn_rate_hz": 98.75555555555556,
+   "n_neurons_any_spike": 404,
+   "spikes_per_trial": 9635.766666666666,
+   "mn9": {
+    "contra": {
+     "mean": 67.03333333333333,
+     "std": 6.595368745482612,
+     "per_trial": [
+      69.0,
+      75.0,
+      65.0,
+      70.0,
+      66.0,
+      59.0,
+      78.0,
+      60.0,
+      60.0,
+      68.0,
+      70.0,
+      63.0,
+      54.0,
+      78.0,
+      70.0,
+      80.0,
+      76.0,
+      67.0,
+      68.0,
+      72.0,
+      71.0,
+      53.0,
+      67.0,
+      60.0,
+      66.0,
+      68.0,
+      65.0,
+      59.0,
+      65.0,
+      69.0
+     ]
+    },
+    "ipsi": {
+     "mean": 48.63333333333333,
+     "std": 4.672496358716851,
+     "per_trial": [
+      44.0,
+      54.0,
+      48.0,
+      60.0,
+      45.0,
+      42.0,
+      53.0,
+      49.0,
+      44.0,
+      49.0,
+      51.0,
+      47.0,
+      44.0,
+      59.0,
+      48.0,
+      50.0,
+      50.0,
+      49.0,
+      48.0,
+      53.0,
+      49.0,
+      41.0,
+      51.0,
+      44.0,
+      47.0,
+      45.0,
+      48.0,
+      42.0,
+      48.0,
+      57.0
+     ]
+    }
+   }
+  }
+ }
+}

@@ -1,0 +1,56 @@
+{
+ "brian2_sugar_200": {
+  "n_trials": 30,
+  "pearson_r_rates_ge_0.5Hz": 0.9998245123238473,
+  "n_neurons_compared": 417,
+  "n_responding": {
+   "ours": 450,
+   "shipped": 448
+  },
+  "spikes_per_trial": {
+   "ours": 16979.666666666668,
+   "shipped": 17052.2
+  },
+  "mn9_contra": {
+   "ours_mean": 92.76666666666667,
+   "ours_sd": 5.463108598184331,
+   "shipped_mean": 93.26666666666667,
+   "shipped_sd": 3.1510139461590594,
+   "z": -0.42694009475816386
+  },
+  "mn9_ipsi": {
+   "ours_mean": 62.3,
+   "ours_sd": 4.329357150124408,
+   "shipped_mean": 61.8,
+   "shipped_sd": 4.174525921187539,
+   "z": 0.4477078908655373
+  }
+ },
+ "brian2_sugar_100": {
+  "n_trials": 30,
+  "pearson_r_rates_ge_0.5Hz": 0.9994462911669567,
+  "n_neurons_compared": 366,
+  "n_responding": {
+   "ours": 405,
+   "shipped": 404
+  },
+  "spikes_per_trial": {
+   "ours": 9852.366666666667,
+   "shipped": 9635.766666666666
+  },
+  "mn9_contra": {
+   "ours_mean": 69.56666666666666,
+   "ours_sd": 3.6210802562525766,
+   "shipped_mean": 67.03333333333333,
+   "shipped_sd": 6.595368745482612,
+   "z": 1.8131782342413527
+  },
+  "mn9_ipsi": {
+   "ours_mean": 51.13333333333333,
+   "ours_sd": 4.279667692187743,
+   "shipped_mean": 48.63333333333333,
+   "shipped_sd": 4.672496358716851,
+   "z": 2.124752024973902
+  }
+ }
+}

@@ -14,10 +14,11 @@
 import fs from 'node:fs';
 import zlib from 'node:zlib';
 import { performance } from 'node:perf_hooks';
+import { fileURLToPath } from 'node:url';
 import { decodeGraph } from '../site/engine/graph.js';
 import { Engine, PARAMS } from '../site/engine/lif.js';
 
-const root = new URL('../', import.meta.url).pathname;
+const root = fileURLToPath(new URL('../', import.meta.url));
 const args = Object.fromEntries(process.argv.slice(2).reduce((a, x, i, arr) => (x.startsWith('--') ? [...a, [x.slice(2), arr[i + 1]]] : a), []));
 const graphVer = args.graph ?? '783';
 const nTrials = +(args.trials ?? 30);

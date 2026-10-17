@@ -1,6 +1,7 @@
 // Full-network deterministic replay: 138,639 neurons, 15.09 M connections, explicit input events.
-// results/reference/replay_783_sugar_100.json was produced by reference/replay_brian2.py (Brian2, the authors'
-// unmodified model.py, events injected in the PoissonInput slot). The JS engine must reproduce every spike.
+// results/reference/replay_783_<cond>.json were produced by reference/replay_brian2.py (Brian2, the authors'
+// unmodified model.py, events injected in the PoissonInput slot, 10,000 steps = 1 s). The JS engine must reproduce
+// every spike (step and neuron), with exact arithmetic (eps = 0) and with the production snapping (eps = 1e-7 V).
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -8,35 +9,30 @@ import zlib from 'node:zlib';
 import { decodeGraph } from '../site/engine/graph.js';
 import { Engine } from '../site/engine/lif.js';
 
-const refPath = new URL('../results/reference/replay_783_sugar_100.json', import.meta.url);
 const graphPath = new URL('../site/data/graph_full.fbg.gz', import.meta.url);
-const skip = !fs.existsSync(refPath) || !fs.existsSync(graphPath);
-
-function run(eps) {
-  const ref = JSON.parse(fs.readFileSync(refPath, 'utf8'));
-  const raw = zlib.gunzipSync(fs.readFileSync(graphPath));
-  const g = decodeGraph(raw.buffer.slice(raw.byteOffset, raw.byteOffset + raw.byteLength));
-  const eng = new Engine(g, { epsV: eps, epsG: eps });
+const conds = ['sugar_100', 'sugar_200', 'water_200', 'sugar_100__bitter_200'];
+let graph = null;
+function getGraph() {
+  if (!graph) { const raw = zlib.gunzipSync(fs.readFileSync(graphPath)); graph = decodeGraph(raw.buffer.slice(raw.byteOffset, raw.byteOffset + raw.byteLength)); }
+  return graph;
+}
+function run(cond, eps) {
+  const ref = JSON.parse(fs.readFileSync(new URL(`../results/reference/replay_783_${cond}.json`, import.meta.url), 'utf8'));
+  const eng = new Engine(getGraph(), { epsV: eps, epsG: eps });
   eng.setNoRefractory([...new Set(ref.events.map(e => e[1]))]);
   eng.setEventSchedule(Int32Array.from(ref.events.map(e => e[0])), Int32Array.from(ref.events.map(e => e[1])));
   eng.run(ref.steps);
   const s = eng.takeSpikes();
-  const spikes = Array.from(s.steps, (st, k) => [st, s.ids[k]]);
-  return { ref, spikes };
+  return { ref, spikes: Array.from(s.steps, (st, k) => [st, s.ids[k]]) };
 }
-function firstDiff(a, b) {
-  const n = Math.min(a.length, b.length);
-  for (let k = 0; k < n; k++) if (a[k][0] !== b[k][0] || a[k][1] !== b[k][1]) return `first difference at spike #${k}: js ${a[k]} brian2 ${b[k]}`;
-  return `lengths differ: js ${a.length} brian2 ${b.length}`;
+function check({ ref, spikes }) {
+  assert.ok(ref.spikes.length > 2000, 'reference should contain a real cascade');
+  const n = Math.min(spikes.length, ref.spikes.length);
+  for (let k = 0; k < n; k++) if (spikes[k][0] !== ref.spikes[k][0] || spikes[k][1] !== ref.spikes[k][1]) assert.fail(`first difference at spike #${k}: js ${spikes[k]} brian2 ${ref.spikes[k]}`);
+  assert.equal(spikes.length, ref.spikes.length, 'spike count');
 }
-
-test('full network, exact arithmetic (no snapping): spike trains identical to Brian2 over 1 s', { skip, timeout: 600000 }, () => {
-  const { ref, spikes } = run(0);
-  assert.ok(ref.spikes.length > 5000, 'reference should contain a real cascade');
-  if (spikes.length !== ref.spikes.length || spikes.some((s, k) => s[0] !== ref.spikes[k][0] || s[1] !== ref.spikes[k][1])) assert.fail(firstDiff(spikes, ref.spikes));
-});
-
-test('full network, production snapping (eps = 1e-7 V): spike trains identical to Brian2 over 1 s', { skip, timeout: 600000 }, () => {
-  const { ref, spikes } = run(1e-7);
-  if (spikes.length !== ref.spikes.length || spikes.some((s, k) => s[0] !== ref.spikes[k][0] || s[1] !== ref.spikes[k][1])) assert.fail(firstDiff(spikes, ref.spikes));
-});
+for (const cond of conds) {
+  const have = fs.existsSync(new URL(`../results/reference/replay_783_${cond}.json`, import.meta.url)) && fs.existsSync(graphPath);
+  test(`full network ${cond}, exact arithmetic (no snapping): every spike identical to Brian2`, { skip: !have, timeout: 600000 }, () => check(run(cond, 0)));
+  test(`full network ${cond}, production snapping (eps = 1e-7 V): every spike identical to Brian2`, { skip: !have, timeout: 600000 }, () => check(run(cond, 1e-7)));
+}
