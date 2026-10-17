@@ -181,7 +181,7 @@ load average 12 on 10 cores at the start (the machine was shared with other jobs
 | water | 1.12x | 1.1x / 1.4x |
 | sugar+bitter | 1.42x | 1.4x / 1.6x |
 
-So under load the page sustained 0.4x to 1.4x real time (the low end is the single readout of the smoke test), well above the 0.1x playback it uses by default and the brief's 0.25x target; a quiet machine should do better.
+So under load the page sustained 0.4x to 1.4x real time (the low end is the single readout of the smoke test), well above the 0.1x playback it uses by default and the 0.25x design target; a quiet machine should do better.
 `tools/smoke_page.mjs` / `results/page_smoke.json`: 55 fps in headless Edge during a cascade; sugar gave MN9 67 Hz after ~8 s at 1x playback
 (engine readout "0.4× real time · playing 1×" at that moment), sugar + bitter gave 0 Hz, no console errors, the graph in the page had N = 138,639 neurons and E = 15,091,983 connections, no horizontal scroll at 375 px.
 
@@ -236,7 +236,7 @@ python tools/map_v630_ids.py                          # results/id_mapping_630_t
 python reference/run_brian2.py --graph 783 --cond sugar_100 --trials 30     # ~3 min per condition; all conditions in reference/conditions.py
 python reference/replay_brian2.py --graph 783 --cond sugar_100 --seed 123   # deterministic replay inputs/outputs
 python tools/prepare_data.py                          # site/data/* and sizes (~6 min)
-npm test                                              # engine tests incl. full-network replays (~1 min)
+npm test                                              # engine tests incl. full-network replays and the statistical test (~2.3 min)
 node tools/validate_engine.mjs --graph 783 --conds all --trials 30          # JS vs Brian2 (+ --graph 630 after tools/pack_graph.py 630 tmp/graph_630.fbg.gz)
 node tools/epsilon_study.mjs && node tools/replay_check.mjs && node tools/bench_engine.mjs && node tools/bench_browser.mjs && node tools/responder_spread.mjs
 python reference/compare_authors_v630.py && python tools/build_page_data.py
@@ -249,4 +249,4 @@ node tools/smoke_page.mjs && python tools/build_readme.py
 * Connectome: FlyWire, Dorkenwald et al., *Nature* 634 (2024) and Schlegel et al., *Nature* 634 (2024); annotations from `flyconnectome/flywire_annotations` (CC-BY 4.0). Attribution is required.
 * Model and connectivity file: Shiu, Sterne, Spiller et al., "A Drosophila computational brain model reveals sensorimotor processing", *Nature* 634:210-219 (2024), doi:10.1038/s41586-024-07763-9; code `philshiu/Drosophila_brain_model` (MIT).
 * Reference simulator: Brian2. Rendering: three.js 0.170.0. Type: Inter Tight, JetBrains Mono (Google Fonts, OFL).
-* This repository's code: MIT.
+* This repository's own code: licence not chosen yet (the third-party code and data above keep theirs).

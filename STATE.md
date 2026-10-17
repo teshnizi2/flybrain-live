@@ -56,5 +56,7 @@ See README "Reproduce". Quick checks: `npm test`; `node tools/smoke_page.mjs`; `
 3. The ~1080x1080 video cut was not made (layout is portrait-first); the 4:5 video and a 2160x2700 still exist.
 4. The paper's water list vs the v783 annotation (7 of 18 labelled sugar) is a small honesty footnote in the About drawer and README; decide if you want it in the post.
 
+5. Licence for this repository's own code is not chosen (package.json says UNLICENSED, README says not chosen yet); the upstream code/data keep MIT / CC-BY 4.0.
+
 ## Next step (if any)
 Nothing required. Optional polish: second video cut, brotli precompression if the host supports it, hosting.

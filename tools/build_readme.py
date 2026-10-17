@@ -198,7 +198,7 @@ load average {bspeed['machine']['loadavg_at_start'][0]:.0f} on {bspeed['machine'
 |---|---|---|
 {chr(10).join(f"| {c} | {r['achieved_x_real_time']:.2f}x | {r['engine_readout_median']}x / {r['engine_readout_max']}x |" for c, r in bspeed['runs'].items())}
 
-So under load the page sustained {_lo:.1f}x to {_hi:.1f}x real time (the low end is the single readout of the smoke test), well above the 0.1x playback it uses by default and the brief's 0.25x target; a quiet machine should do better.
+So under load the page sustained {_lo:.1f}x to {_hi:.1f}x real time (the low end is the single readout of the smoke test), well above the 0.1x playback it uses by default and the 0.25x design target; a quiet machine should do better.
 `tools/smoke_page.mjs` / `results/page_smoke.json`: {k['headless_fps_during_cascade']:.0f} fps in headless Edge during a cascade; sugar gave MN9 {k['sugar_after_8s']['mn9_hz']:.0f} Hz after ~8 s at 1x playback
 (engine readout "{k['sugar_after_8s']['engine']}" at that moment), sugar + bitter gave {k['sugar_plus_bitter_after_7s']['mn9_hz']:.0f} Hz, no console errors, the graph in the page had N = {k['engine_graph']['N']:,} neurons and E = {k['engine_graph']['E']:,} connections, no horizontal scroll at 375 px.
 
@@ -249,7 +249,7 @@ python tools/map_v630_ids.py                          # results/id_mapping_630_t
 python reference/run_brian2.py --graph 783 --cond sugar_100 --trials 30     # ~3 min per condition; all conditions in reference/conditions.py
 python reference/replay_brian2.py --graph 783 --cond sugar_100 --seed 123   # deterministic replay inputs/outputs
 python tools/prepare_data.py                          # site/data/* and sizes (~6 min)
-npm test                                              # engine tests incl. full-network replays (~1 min)
+npm test                                              # engine tests incl. full-network replays and the statistical test (~{_ts['wall_seconds']/60:.1f} min)
 node tools/validate_engine.mjs --graph 783 --conds all --trials 30          # JS vs Brian2 (+ --graph 630 after tools/pack_graph.py 630 tmp/graph_630.fbg.gz)
 node tools/epsilon_study.mjs && node tools/replay_check.mjs && node tools/bench_engine.mjs && node tools/bench_browser.mjs && node tools/responder_spread.mjs
 python reference/compare_authors_v630.py && python tools/build_page_data.py
@@ -262,7 +262,7 @@ node tools/smoke_page.mjs && python tools/build_readme.py
 * Connectome: FlyWire, Dorkenwald et al., *Nature* 634 (2024) and Schlegel et al., *Nature* 634 (2024); annotations from `flyconnectome/flywire_annotations` (CC-BY 4.0). Attribution is required.
 * Model and connectivity file: Shiu, Sterne, Spiller et al., "A Drosophila computational brain model reveals sensorimotor processing", *Nature* 634:210-219 (2024), doi:10.1038/s41586-024-07763-9; code `philshiu/Drosophila_brain_model` (MIT).
 * Reference simulator: Brian2. Rendering: three.js 0.170.0. Type: Inter Tight, JetBrains Mono (Google Fonts, OFL).
-* This repository's code: MIT.
+* This repository's own code: licence not chosen yet (the third-party code and data above keep theirs).
 """
 (ROOT / "README.md").write_text(md)
 print("README.md written,", len(md.split()), "words")
