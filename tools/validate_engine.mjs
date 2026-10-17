@@ -28,7 +28,7 @@ const tag = args.tag ?? 'js';
 const T_STEPS = 10000;
 
 function loadGraph() {
-  const p = graphVer === '783' ? root + 'site/data/graph_full.fbg.gz' : root + 'tmp/graph_630.fbg.gz';
+  const p = args.graphfile ? root + args.graphfile : (graphVer === '783' ? root + 'site/data/graph_full.fbg.gz' : root + 'tmp/graph_630.fbg.gz');
   const raw = zlib.gunzipSync(fs.readFileSync(p));
   return decodeGraph(raw.buffer.slice(raw.byteOffset, raw.byteOffset + raw.byteLength));
 }

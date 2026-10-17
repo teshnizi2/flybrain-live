@@ -1,0 +1,265 @@
+{
+ "engine": "js",
+ "eps_volts": 1e-7,
+ "n_trials": 30,
+ "seed0": 1000,
+ "criteria": {
+  "mn9": "Welch |z| <= 3.5 or |diff| <= 1 Hz",
+  "total_spikes": "|rel diff| <= 3%",
+  "responding": "<= 15% or 8 neurons",
+  "rate_correlation": "Pearson r >= 0.98 for neurons >= 0.5 Hz"
+ },
+ "conditions": {
+  "sugar_100": {
+   "mn9_contra": {
+    "js_mean": 69.33333333333333,
+    "js_sd": 4.7772609539591,
+    "brian2_mean": 68.7,
+    "brian2_sd": 4.817675788178361,
+    "diff": 0.6333333333333258,
+    "z": 0.5112837654870614,
+    "js_trials_with_spikes": 30,
+    "brian2_trials_with_spikes": 30,
+    "pass": true
+   },
+   "mn9_ipsi": {
+    "js_mean": 49.3,
+    "js_sd": 3.1214312956291916,
+    "brian2_mean": 50.733333333333334,
+    "brian2_sd": 4.932432350158376,
+    "diff": -1.4333333333333371,
+    "z": -1.3449545188412713,
+    "js_trials_with_spikes": 30,
+    "brian2_trials_with_spikes": 30,
+    "pass": true
+   },
+   "total_spikes": {
+    "js": 9544.133333333333,
+    "brian2": 9706.366666666667,
+    "rel_diff": -0.016714115477470138,
+    "pass": true
+   },
+   "responding": {
+    "js": 394,
+    "brian2": 403,
+    "pass": true
+   },
+   "rate_correlation": {
+    "pearson_r": 0.9988931617346078,
+    "n_neurons": 360,
+    "pass": true
+   },
+   "count_z": {
+    "mean_z2": 2.3545424355940088,
+    "n_neurons": 387,
+    "n_abs_z_gt_3": 18
+   },
+   "speed": {
+    "ms_per_trial_mean": 309.18001813333325,
+    "real_time_factor": 3.2343616707104017
+   },
+   "pass": true
+  },
+  "water_200": {
+   "mn9_contra": {
+    "js_mean": 26.166666666666668,
+    "js_sd": 5.241395064505464,
+    "brian2_mean": 30.333333333333332,
+    "brian2_sd": 4.982190504408901,
+    "diff": -4.166666666666664,
+    "z": -3.155888194869646,
+    "js_trials_with_spikes": 30,
+    "brian2_trials_with_spikes": 30,
+    "pass": true
+   },
+   "mn9_ipsi": {
+    "js_mean": 9.9,
+    "js_sd": 3.9017090272511785,
+    "brian2_mean": 12.6,
+    "brian2_sd": 3.954743986657038,
+    "diff": -2.6999999999999993,
+    "z": -2.6619688972992512,
+    "js_trials_with_spikes": 30,
+    "brian2_trials_with_spikes": 30,
+    "pass": true
+   },
+   "total_spikes": {
+    "js": 7229.966666666666,
+    "brian2": 7562.3,
+    "rel_diff": -0.04394606579127169,
+    "pass": false
+   },
+   "responding": {
+    "js": 341,
+    "brian2": 357,
+    "pass": true
+   },
+   "rate_correlation": {
+    "pearson_r": 0.9990660294074156,
+    "n_neurons": 264,
+    "pass": true
+   },
+   "count_z": {
+    "mean_z2": 6.640451569360862,
+    "n_neurons": 328,
+    "n_abs_z_gt_3": 63
+   },
+   "speed": {
+    "ms_per_trial_mean": 275.11933473333323,
+    "real_time_factor": 3.6347863408774113
+   },
+   "pass": false
+  },
+  "bitter_200": {
+   "mn9_contra": {
+    "js_mean": 0,
+    "js_sd": 0,
+    "brian2_mean": 0,
+    "brian2_sd": 0,
+    "diff": 0,
+    "z": 0,
+    "js_trials_with_spikes": 0,
+    "brian2_trials_with_spikes": 0,
+    "pass": true
+   },
+   "mn9_ipsi": {
+    "js_mean": 0,
+    "js_sd": 0,
+    "brian2_mean": 0,
+    "brian2_sd": 0,
+    "diff": 0,
+    "z": 0,
+    "js_trials_with_spikes": 0,
+    "brian2_trials_with_spikes": 0,
+    "pass": true
+   },
+   "total_spikes": {
+    "js": 6245.666666666667,
+    "brian2": 6459.333333333333,
+    "rel_diff": -0.03307874909691393,
+    "pass": false
+   },
+   "responding": {
+    "js": 88,
+    "brian2": 92,
+    "pass": true
+   },
+   "rate_correlation": {
+    "pearson_r": 0.9989015502752089,
+    "n_neurons": 88,
+    "pass": true
+   },
+   "count_z": {
+    "mean_z2": 25.87932614163341,
+    "n_neurons": 91,
+    "n_abs_z_gt_3": 24
+   },
+   "speed": {
+    "ms_per_trial_mean": 410.5575277333337,
+    "real_time_factor": 2.4357122509017115
+   },
+   "pass": false
+  },
+  "sugar_100__bitter_200": {
+   "mn9_contra": {
+    "js_mean": 0.1,
+    "js_sd": 0.3,
+    "brian2_mean": 0.06666666666666667,
+    "brian2_sd": 0.24944382578492943,
+    "diff": 0.03333333333333334,
+    "z": 0.4679509612626357,
+    "js_trials_with_spikes": 3,
+    "brian2_trials_with_spikes": 2,
+    "pass": true
+   },
+   "mn9_ipsi": {
+    "js_mean": 0.03333333333333333,
+    "js_sd": 0.17950549357115012,
+    "brian2_mean": 0.03333333333333333,
+    "brian2_sd": 0.1795054935711501,
+    "diff": 0,
+    "z": 0,
+    "js_trials_with_spikes": 1,
+    "brian2_trials_with_spikes": 1,
+    "pass": true
+   },
+   "total_spikes": {
+    "js": 10195.366666666667,
+    "brian2": 10481.833333333334,
+    "rel_diff": -0.027329824617194874,
+    "pass": true
+   },
+   "responding": {
+    "js": 285,
+    "brian2": 294,
+    "pass": true
+   },
+   "rate_correlation": {
+    "pearson_r": 0.9984281352920779,
+    "n_neurons": 212,
+    "pass": true
+   },
+   "count_z": {
+    "mean_z2": 14.319787446782,
+    "n_neurons": 271,
+    "n_abs_z_gt_3": 67
+   },
+   "speed": {
+    "ms_per_trial_mean": 512.3349666666664,
+    "real_time_factor": 1.9518480390010475
+   },
+   "pass": true
+  },
+  "sugar_100__bitter_100": {
+   "mn9_contra": {
+    "js_mean": 4.8,
+    "js_sd": 3.2393414968683576,
+    "brian2_mean": 4.566666666666666,
+    "brian2_sd": 2.765059774318732,
+    "diff": 0.2333333333333334,
+    "z": 0.3000765599091264,
+    "js_trials_with_spikes": 28,
+    "brian2_trials_with_spikes": 29,
+    "pass": true
+   },
+   "mn9_ipsi": {
+    "js_mean": 10.166666666666666,
+    "js_sd": 2.517715013437559,
+    "brian2_mean": 10.733333333333333,
+    "brian2_sd": 2.14372469210847,
+    "diff": -0.5666666666666664,
+    "z": -0.9386202787267329,
+    "js_trials_with_spikes": 30,
+    "brian2_trials_with_spikes": 30,
+    "pass": true
+   },
+   "total_spikes": {
+    "js": 9175.866666666667,
+    "brian2": 9175.233333333334,
+    "rel_diff": 0.0000690264007818016,
+    "pass": true
+   },
+   "responding": {
+    "js": 390,
+    "brian2": 397,
+    "pass": true
+   },
+   "rate_correlation": {
+    "pearson_r": 0.9985583848780254,
+    "n_neurons": 320,
+    "pass": true
+   },
+   "count_z": {
+    "mean_z2": 3.0457965480177003,
+    "n_neurons": 380,
+    "n_abs_z_gt_3": 29
+   },
+   "speed": {
+    "ms_per_trial_mean": 305.1369638333342,
+    "real_time_factor": 3.2772168518600058
+   },
+   "pass": true
+  }
+ },
+ "all_pass": false
+}

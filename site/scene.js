@@ -79,7 +79,7 @@ void main() {
   float act = uAct[k];
   vCol = uMc[k]; vAct = act; vKind = aKind;
   float pulse = 0.5 + 0.5 * sin(uTime * 5.0 + position.x * 7.0);
-  float base = k >= 3 ? 21.0 : 13.0;
+  float base = k == 3 ? 21.0 : (k == 4 ? 15.0 : 13.0);
   gl_PointSize = (base + act * (4.0 + 3.0 * pulse)) * uRef / max(-mv.z, 0.1) * uDpr;
   gl_Position = projectionMatrix * mv;
 }`;
@@ -89,7 +89,7 @@ void main() {
   vec2 c = gl_PointCoord - 0.5;
   float d = length(c) * 2.0;
   float ring = smoothstep(0.62, 0.72, d) * (1.0 - smoothstep(0.88, 1.0, d));
-  float i = (vKind > 2.5 ? 0.62 : 0.22 + 0.75 * vAct);
+  float i = (vKind > 3.5 ? 0.34 : (vKind > 2.5 ? 0.62 : 0.22 + 0.75 * vAct));
   gl_FragColor = vec4(vCol * ring * i, 1.0);
 }`;
 

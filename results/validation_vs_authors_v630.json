@@ -52,5 +52,59 @@
    "shipped_sd": 4.672496358716851,
    "z": 2.124752024973902
   }
+ },
+ "js_sugar_200": {
+  "n_trials": 30,
+  "pearson_r_rates_ge_0.5Hz": 0.9996959625180443,
+  "n_neurons_compared": 417,
+  "n_responding": {
+   "ours": 457,
+   "shipped": 448
+  },
+  "spikes_per_trial": {
+   "ours": 16991.5,
+   "shipped": 17052.2
+  },
+  "mn9_contra": {
+   "ours_mean": 92.5,
+   "ours_sd": 3.7036018504513506,
+   "shipped_mean": 93.26666666666667,
+   "shipped_sd": 3.1510139461590594,
+   "z": -0.8490452156981335
+  },
+  "mn9_ipsi": {
+   "ours_mean": 62.4,
+   "ours_sd": 4.786090958879352,
+   "shipped_mean": 61.8,
+   "shipped_sd": 4.174525921187539,
+   "z": 0.508766130168482
+  }
+ },
+ "js_sugar_100": {
+  "n_trials": 30,
+  "pearson_r_rates_ge_0.5Hz": 0.9995206482537344,
+  "n_neurons_compared": 366,
+  "n_responding": {
+   "ours": 405,
+   "shipped": 404
+  },
+  "spikes_per_trial": {
+   "ours": 9676.066666666668,
+   "shipped": 9635.766666666666
+  },
+  "mn9_contra": {
+   "ours_mean": 66.7,
+   "ours_sd": 4.8863756166167445,
+   "shipped_mean": 67.03333333333333,
+   "shipped_sd": 6.595368745482612,
+   "z": -0.21868881163043413
+  },
+  "mn9_ipsi": {
+   "ours_mean": 49.833333333333336,
+   "ours_sd": 3.6339449026582056,
+   "shipped_mean": 48.63333333333333,
+   "shipped_sd": 4.672496358716851,
+   "z": 1.0917217635255876
+  }
  }
 }

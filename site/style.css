@@ -120,7 +120,7 @@ input[type=range]::-moz-range-thumb { width: .62rem; height: 1rem; background: v
 .tag { position: absolute; left: 0; top: 0; will-change: transform; font: 500 .62rem/1.15 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: #f3f6ff; white-space: nowrap; transition: opacity .25s; }
 .tag::before { content: ""; position: absolute; left: 0; top: 0; width: var(--len, 2.4rem); height: 1px; background: rgba(243, 246, 255, .55); transform-origin: 0 0; transform: rotate(var(--ang, -35deg)); }
 .tag span { display: block; margin-left: calc(var(--dx, 2rem) * 1); margin-top: calc(var(--dy, -1.8rem) * 1); text-shadow: 0 0 .6rem #000, 0 0 .2rem #000; padding: .22rem .4rem; background: rgba(10, 13, 19, .55); border-left: 1px solid rgba(243, 246, 255, .5); }
-.tag small { display: block; font-size: .52rem; letter-spacing: .1em; color: #aab6cf; margin-top: .2rem; }
+.tag small { display: block; white-space: nowrap; font-size: .52rem; letter-spacing: .1em; color: #aab6cf; margin-top: .2rem; }
 .tag.hide { opacity: 0; }
 
 .tip { position: fixed; z-index: 6; pointer-events: none; background: rgba(14, 17, 23, .92); border: 1px solid var(--hair); border-radius: 2px; padding: .45rem .6rem; font: 500 .68rem/1.35 var(--mono); color: var(--text); max-width: 16rem; transform: translate(14px, 14px); }

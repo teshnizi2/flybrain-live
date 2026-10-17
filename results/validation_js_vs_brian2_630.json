@@ -1,0 +1,215 @@
+{
+ "engine": "js",
+ "eps_volts": 1e-7,
+ "n_trials": 30,
+ "seed0": 1000,
+ "criteria": {
+  "mn9": "Welch |z| <= 3.5 or |diff| <= 1 Hz",
+  "total_spikes": "|rel diff| <= 3%",
+  "responding": "<= 15% or 8 neurons",
+  "rate_correlation": "Pearson r >= 0.98 for neurons >= 0.5 Hz"
+ },
+ "conditions": {
+  "sugar_10": {
+   "mn9_contra": {
+    "js_mean": 0,
+    "js_sd": 0,
+    "brian2_mean": 0,
+    "brian2_sd": 0,
+    "diff": 0,
+    "z": 0,
+    "js_trials_with_spikes": 0,
+    "brian2_trials_with_spikes": 0,
+    "pass": true
+   },
+   "mn9_ipsi": {
+    "js_mean": 0,
+    "js_sd": 0,
+    "brian2_mean": 0,
+    "brian2_sd": 0,
+    "diff": 0,
+    "z": 0,
+    "js_trials_with_spikes": 0,
+    "brian2_trials_with_spikes": 0,
+    "pass": true
+   },
+   "total_spikes": {
+    "js": 247.66666666666666,
+    "brian2": 244.53333333333333,
+    "rel_diff": 0.012813522355507057,
+    "pass": true
+   },
+   "responding": {
+    "js": 43,
+    "brian2": 39,
+    "pass": true
+   },
+   "rate_correlation": {
+    "pearson_r": 0.9770611996866075,
+    "n_neurons": 28,
+    "pass": false
+   },
+   "count_z": {
+    "mean_z2": 0.7551228088073255,
+    "n_neurons": 33,
+    "n_abs_z_gt_3": 0
+   },
+   "speed": {
+    "ms_per_trial_mean": 31.060549933333345,
+    "real_time_factor": 32.19518012869524
+   },
+   "pass": false
+  },
+  "sugar_100": {
+   "mn9_contra": {
+    "js_mean": 66.7,
+    "js_sd": 4.886375616616744,
+    "brian2_mean": 69.56666666666666,
+    "brian2_sd": 3.6210802562525766,
+    "diff": -2.86666666666666,
+    "z": -2.5816786368472955,
+    "js_trials_with_spikes": 30,
+    "brian2_trials_with_spikes": 30,
+    "pass": true
+   },
+   "mn9_ipsi": {
+    "js_mean": 49.833333333333336,
+    "js_sd": 3.6339449026582056,
+    "brian2_mean": 51.13333333333333,
+    "brian2_sd": 4.279667692187743,
+    "diff": -1.2999999999999972,
+    "z": -1.2682451808566557,
+    "js_trials_with_spikes": 30,
+    "brian2_trials_with_spikes": 30,
+    "pass": true
+   },
+   "total_spikes": {
+    "js": 9676.066666666668,
+    "brian2": 9852.366666666667,
+    "rel_diff": -0.017894177710262436,
+    "pass": true
+   },
+   "responding": {
+    "js": 405,
+    "brian2": 405,
+    "pass": true
+   },
+   "rate_correlation": {
+    "pearson_r": 0.9992461208728882,
+    "n_neurons": 367,
+    "pass": true
+   },
+   "count_z": {
+    "mean_z2": 0.7394478303568224,
+    "n_neurons": 401,
+    "n_abs_z_gt_3": 1
+   },
+   "speed": {
+    "ms_per_trial_mean": 736.2093012666664,
+    "real_time_factor": 1.3583093806061335
+   },
+   "pass": true
+  },
+  "sugar_150": {
+   "mn9_contra": {
+    "js_mean": 83.2,
+    "js_sd": 4.497406660139449,
+    "brian2_mean": 83.46666666666667,
+    "brian2_sd": 4.602414825091521,
+    "diff": -0.2666666666666657,
+    "z": -0.2269773759753203,
+    "js_trials_with_spikes": 30,
+    "brian2_trials_with_spikes": 30,
+    "pass": true
+   },
+   "mn9_ipsi": {
+    "js_mean": 58.63333333333333,
+    "js_sd": 4.651045282753353,
+    "brian2_mean": 57.86666666666667,
+    "brian2_sd": 4.766083880457367,
+    "diff": 0.7666666666666657,
+    "z": 0.6305670560823021,
+    "js_trials_with_spikes": 30,
+    "brian2_trials_with_spikes": 30,
+    "pass": true
+   },
+   "total_spikes": {
+    "js": 13663.2,
+    "brian2": 13662.766666666666,
+    "rel_diff": 0.00003171636784162579,
+    "pass": true
+   },
+   "responding": {
+    "js": 419,
+    "brian2": 431,
+    "pass": true
+   },
+   "rate_correlation": {
+    "pearson_r": 0.9996658908091612,
+    "n_neurons": 390,
+    "pass": true
+   },
+   "count_z": {
+    "mean_z2": 0.5253457172336062,
+    "n_neurons": 427,
+    "n_abs_z_gt_3": 0
+   },
+   "speed": {
+    "ms_per_trial_mean": 1311.7873943999998,
+    "real_time_factor": 0.7623186533648552
+   },
+   "pass": true
+  },
+  "sugar_200": {
+   "mn9_contra": {
+    "js_mean": 92.5,
+    "js_sd": 3.7036018504513506,
+    "brian2_mean": 92.76666666666667,
+    "brian2_sd": 5.463108598184331,
+    "diff": -0.2666666666666657,
+    "z": -0.22129639876804258,
+    "js_trials_with_spikes": 30,
+    "brian2_trials_with_spikes": 30,
+    "pass": true
+   },
+   "mn9_ipsi": {
+    "js_mean": 62.4,
+    "js_sd": 4.786090958879352,
+    "brian2_mean": 62.3,
+    "brian2_sd": 4.329357150124408,
+    "diff": 0.10000000000000142,
+    "z": 0.0848697893979713,
+    "js_trials_with_spikes": 30,
+    "brian2_trials_with_spikes": 30,
+    "pass": true
+   },
+   "total_spikes": {
+    "js": 16991.5,
+    "brian2": 16979.666666666668,
+    "rel_diff": 0.0006969119927756013,
+    "pass": true
+   },
+   "responding": {
+    "js": 457,
+    "brian2": 450,
+    "pass": true
+   },
+   "rate_correlation": {
+    "pearson_r": 0.9996564161236619,
+    "n_neurons": 418,
+    "pass": true
+   },
+   "count_z": {
+    "mean_z2": 0.4685005555091576,
+    "n_neurons": 443,
+    "n_abs_z_gt_3": 0
+   },
+   "speed": {
+    "ms_per_trial_mean": 898.1243875666677,
+    "real_time_factor": 1.1134315177760052
+   },
+   "pass": true
+  }
+ },
+ "all_pass": false
+}

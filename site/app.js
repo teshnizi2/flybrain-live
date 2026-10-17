@@ -196,9 +196,9 @@ function setupTags() {
   const host = $('#tags');
   const mk = (id, html, dx, dy, ang, len) => { const el = document.createElement('div'); el.className = 'tag hide'; el.style.setProperty('--len', len || '2.4rem'); el.style.setProperty('--dx', dx); el.style.setProperty('--dy', dy); el.style.setProperty('--ang', ang); el.innerHTML = `<span>${html}</span>`; host.appendChild(el); tagEls[id] = el; };
   mk('sugar', `SUGAR GRNs<small>21 taste neurons</small>`, '4.2rem', '-5.1rem', '-50deg', '4.9rem');
-  mk('water', `WATER GRNs<small>18 taste neurons</small>`, '-12rem', '-5.4rem', '-130deg', '4.9rem');
-  mk('bitter', `BITTER GRNs<small>21 taste neurons</small>`, '-12rem', '3.2rem', '130deg', '4.2rem');
-  mk('mn9', `MN9<small>lifts the proboscis</small>`, '2.4rem', '2.2rem', '38deg', '2.6rem');
+  mk('water', `WATER GRNs<small>18 taste neurons</small>`, '-12.2rem', '-5.4rem', '-130deg', '4.9rem');
+  mk('bitter', `BITTER GRNs<small>21 taste neurons</small>`, '4.4rem', '3.9rem', '48deg', '5.3rem');
+  mk('mn9', `MN9<small>lifts the proboscis</small>`, '-11.4rem', '3.2rem', '132deg', '4.4rem');
 }
 function updateTags() {
   const act = new Set(PRESETS[state.stim].map(p => p[0]));

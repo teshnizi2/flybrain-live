@@ -79,8 +79,8 @@ if (args.hero) {
   }
   const out = path.join(root, args.out ?? 'media/flybrain-1080x1350.mp4');
   fs.mkdirSync(path.dirname(out), { recursive: true });
-  const r = spawnSync('ffmpeg', ['-y', '-framerate', String(FPS), '-i', path.join(framesDir, 'f_%04d.jpg'), '-c:v', 'libx264', '-preset', 'slow', '-crf', '17', '-pix_fmt', 'yuv420p',
-    '-vf', `scale=${W}:${H}:flags=lanczos`, '-movflags', '+faststart', '-an', out], { stdio: 'inherit' });
+  const r = spawnSync('ffmpeg', ['-y', '-framerate', String(FPS), '-i', path.join(framesDir, 'f_%04d.jpg'), '-c:v', 'libx264', '-preset', 'slow', '-crf', '20', '-maxrate', '14M', '-bufsize', '28M',
+    '-vf', `scale=${W}:${H}:flags=lanczos:in_range=pc:out_range=tv,format=yuv420p`, '-color_range', 'tv', '-colorspace', 'bt709', '-color_primaries', 'bt709', '-color_trc', 'bt709', '-movflags', '+faststart', '-an', out], { stdio: 'inherit' });
   console.log('ffmpeg exit', r.status, '->', out);
 }
 await browser.close(); server.close();

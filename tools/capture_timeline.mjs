@@ -20,7 +20,7 @@ export function timeline(t, { feed, home }, opts = {}) {
   const push = ease((t - 2.5) / 5.5) * (1 - ease((t - 16.5) / 3.3)) * (opts.hero ? 0.62 : 1);
   const base = { x: 0.0, y: -0.35, z: 0.1 };
   const target = [lerp(base.x, feed[0], 0.55 * push), lerp(base.y, feed[1], 0.55 * push), lerp(base.z, feed[2], 0.55 * push)];
-  const distance = lerp(home, home * 0.52, push);
+  const distance = lerp(home * 0.84, home * 0.52, push);
   const azimuth = lerp(-0.42, 0.62, t / 20) + 0.12 * Math.sin(t * 0.5);
   const polar = lerp(1.34, 1.22, push);
   return { stim, caption, speed: 0.1, camera: { target, distance, azimuth, polar } };
