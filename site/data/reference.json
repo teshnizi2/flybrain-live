@@ -1,0 +1,181 @@
+{
+ "presets": {
+  "sugar_100": {
+   "contra": {
+    "mean": 68.7,
+    "sd": 4.817675788178361
+   },
+   "ipsi": {
+    "mean": 50.733333333333334,
+    "sd": 4.932432350158376
+   },
+   "n_trials": 30
+  },
+  "water_200": {
+   "contra": {
+    "mean": 30.333333333333332,
+    "sd": 4.982190504408901
+   },
+   "ipsi": {
+    "mean": 12.6,
+    "sd": 3.954743986657038
+   },
+   "n_trials": 30
+  },
+  "bitter_200": {
+   "contra": {
+    "mean": 0.0,
+    "sd": 0.0
+   },
+   "ipsi": {
+    "mean": 0.0,
+    "sd": 0.0
+   },
+   "n_trials": 30
+  },
+  "sugar_100__bitter_200": {
+   "contra": {
+    "mean": 0.06666666666666667,
+    "sd": 0.24944382578492943
+   },
+   "ipsi": {
+    "mean": 0.03333333333333333,
+    "sd": 0.1795054935711501
+   },
+   "n_trials": 30
+  }
+ },
+ "table": [
+  {
+   "label": "Sugar 50 Hz",
+   "brian2": {
+    "mean": 18.1,
+    "sd": 7.115007613020055
+   },
+   "js": {
+    "mean": 19.833333333333332,
+    "sd": 5.905270715405199
+   }
+  },
+  {
+   "label": "Sugar 100 Hz (paper's calibration)",
+   "brian2": {
+    "mean": 68.7,
+    "sd": 4.817675788178361
+   },
+   "js": {
+    "mean": 67.06666666666666,
+    "sd": 4.456705310228871
+   },
+   "authors": {
+    "mean": 67.03333333333333,
+    "sd": 6.595368745482612
+   }
+  },
+  {
+   "label": "Sugar 200 Hz",
+   "brian2": {
+    "mean": 93.26666666666667,
+    "sd": 5.246797965320266
+   },
+   "js": {
+    "mean": 95.1,
+    "sd": 5.539855593785817
+   },
+   "authors": {
+    "mean": 93.26666666666667,
+    "sd": 3.1510139461590594
+   }
+  },
+  {
+   "label": "Water 200 Hz",
+   "brian2": {
+    "mean": 30.333333333333332,
+    "sd": 4.982190504408901
+   },
+   "js": {
+    "mean": 32.36666666666667,
+    "sd": 5.4435486791450876
+   }
+  },
+  {
+   "label": "Water 260 Hz",
+   "brian2": {
+    "mean": 53.13333333333333,
+    "sd": 4.984865985048032
+   },
+   "js": {
+    "mean": 51.166666666666664,
+    "sd": 5.060193233025351
+   }
+  },
+  {
+   "label": "Bitter 200 Hz alone",
+   "brian2": {
+    "mean": 0.0,
+    "sd": 0.0
+   },
+   "js": {
+    "mean": 0,
+    "sd": 0
+   }
+  },
+  {
+   "label": "Sugar 100 + bitter 50 Hz",
+   "brian2": {
+    "mean": 36.766666666666666,
+    "sd": 5.857663546348682
+   },
+   "js": {
+    "mean": 38.9,
+    "sd": 5.015642198828247
+   }
+  },
+  {
+   "label": "Sugar 100 + bitter 100 Hz",
+   "brian2": {
+    "mean": 4.566666666666666,
+    "sd": 2.765059774318732
+   },
+   "js": {
+    "mean": 4.566666666666666,
+    "sd": 2.5649344804280845
+   }
+  },
+  {
+   "label": "Sugar 100 + bitter 200 Hz",
+   "brian2": {
+    "mean": 0.06666666666666667,
+    "sd": 0.24944382578492943
+   },
+   "js": {
+    "mean": 0.13333333333333333,
+    "sd": 0.339934634239519
+   }
+  },
+  {
+   "label": "Sugar 100 + water 100 Hz",
+   "brian2": {
+    "mean": 86.3,
+    "sd": 4.488132499529547
+   },
+   "js": {
+    "mean": 87.86666666666666,
+    "sd": 4.766083880457367
+   }
+  },
+  {
+   "label": "Sugar 100 + Ir94e 100 Hz",
+   "brian2": {
+    "mean": 16.533333333333335,
+    "sd": 6.238233368154446
+   },
+   "js": {
+    "mean": 16.2,
+    "sd": 4.354308211415448
+   }
+  }
+ ],
+ "note": "MN9 contralateral to the stimulated neurons, mean &plusmn; sd over 30 trials of 1&nbsp;s. &ldquo;Authors&rdquo; = spike files shipped with the paper's code (FlyWire v630); the other two columns use v783. Deterministic replay of identical input events: every spike of four full-brain runs (44,080 spikes) is reproduced exactly.",
+ "validation_pass": false
+}

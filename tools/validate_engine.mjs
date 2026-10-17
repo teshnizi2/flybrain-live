@@ -106,6 +106,17 @@ for (const cond of conds) {
   for (let i = 0; i < g.N; i++) if (meanRate[i] >= 0.5 || refRate[i] >= 0.5) both.push(i);
   const r = pearson(both.map(i => meanRate[i]), both.map(i => refRate[i]));
 
+  // supplementary, noise-aware metric: per-neuron total counts over the trials, z = (C_js - C_b2)/sqrt(C_js + C_b2)
+  // (Poisson counting noise; spike counts are sub-Poisson, so this is conservative). Equivalent engines give mean z^2 ~ 1 or less.
+  let zz = 0, nz = 0, big = 0;
+  const refTot = new Float64Array(g.N);
+  for (const [rid, arr] of Object.entries(ref.per_neuron_counts)) refTot[idIndex.get(rid)] = arr.reduce((a, b) => a + b, 0);
+  for (let i = 0; i < g.N; i++) {
+    let c1 = 0; for (const c of counts) c1 += c[i];
+    const c2 = refTot[i];
+    if (c1 + c2 < 3) continue;
+    const z = (c1 - c2) / Math.sqrt(c1 + c2); zz += z * z; nz++; if (Math.abs(z) > 3) big++;
+  }
   const welch = (a, b) => { const sa = sd(a) ** 2 / a.length, sb = sd(b) ** 2 / b.length; return (mean(a) - mean(b)) / Math.sqrt(sa + sb + 1e-12); };
   const res = {};
   for (const w of ['contra', 'ipsi']) {
@@ -120,6 +131,7 @@ for (const cond of conds) {
   res.responding = { js: responding.length, brian2: ref.n_responding_neurons_any_trial,
                      pass: Math.abs(responding.length - ref.n_responding_neurons_any_trial) <= Math.max(8, 0.15 * ref.n_responding_neurons_any_trial) };
   res.rate_correlation = { pearson_r: r, n_neurons: both.length, pass: r >= 0.98 };
+  res.count_z = { mean_z2: zz / Math.max(nz, 1), n_neurons: nz, n_abs_z_gt_3: big };
   res.speed = { ms_per_trial_mean: mean(wall), real_time_factor: 1000 / mean(wall) };
   res.pass = res.mn9_contra.pass && res.mn9_ipsi.pass && res.total_spikes.pass && res.responding.pass && res.rate_correlation.pass;
   summary[cond] = res;
@@ -134,7 +146,7 @@ for (const cond of conds) {
     per_neuron_counts: perNeuron, wall_ms_per_trial: wall,
   }));
   const f = (x, d = 1) => x.toFixed(d);
-  console.log(`${cond.padEnd(24)} MN9 contra js ${f(res.mn9_contra.js_mean)} vs b2 ${f(res.mn9_contra.brian2_mean)} (z ${f(res.mn9_contra.z, 2)}) | ipsi ${f(res.mn9_ipsi.js_mean)} vs ${f(res.mn9_ipsi.brian2_mean)} (z ${f(res.mn9_ipsi.z, 2)}) | spikes ${f(jsTotal, 0)} vs ${f(refTotal, 0)} | resp ${responding.length} vs ${ref.n_responding_neurons_any_trial} | r=${f(r, 4)} | ${f(res.speed.real_time_factor, 2)}x RT | ${res.pass ? 'PASS' : 'FAIL'}`);
+  console.log(`${cond.padEnd(24)} MN9 contra js ${f(res.mn9_contra.js_mean)} vs b2 ${f(res.mn9_contra.brian2_mean)} (z ${f(res.mn9_contra.z, 2)}) | ipsi ${f(res.mn9_ipsi.js_mean)} vs ${f(res.mn9_ipsi.brian2_mean)} (z ${f(res.mn9_ipsi.z, 2)}) | spikes ${f(jsTotal, 0)} vs ${f(refTotal, 0)} | resp ${responding.length} vs ${ref.n_responding_neurons_any_trial} | r=${f(r, 4)} z2=${f(res.count_z.mean_z2, 2)} | ${f(res.speed.real_time_factor, 2)}x RT | ${res.pass ? 'PASS' : 'FAIL'}`);
 }
 fs.writeFileSync(root + `results/validation_${tag}_vs_brian2_${graphVer}.json`, JSON.stringify({
   engine: 'js', eps_volts: eps, n_trials: nTrials, seed0, criteria: {

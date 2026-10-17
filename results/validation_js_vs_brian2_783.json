@@ -49,9 +49,14 @@
     "n_neurons": 57,
     "pass": true
    },
+   "count_z": {
+    "mean_z2": 0.8128409999581476,
+    "n_neurons": 62,
+    "n_abs_z_gt_3": 1
+   },
    "speed": {
-    "ms_per_trial_mean": 421.49671656666663,
-    "real_time_factor": 2.372497722273083
+    "ms_per_trial_mean": 415.9518833333335,
+    "real_time_factor": 2.4041242270289827
    },
    "pass": true
   },
@@ -94,9 +99,14 @@
     "n_neurons": 88,
     "pass": true
    },
+   "count_z": {
+    "mean_z2": 0.32809571169361795,
+    "n_neurons": 92,
+    "n_abs_z_gt_3": 0
+   },
    "speed": {
-    "ms_per_trial_mean": 644.9399929,
-    "real_time_factor": 1.5505318494879774
+    "ms_per_trial_mean": 514.3981180999999,
+    "real_time_factor": 1.9440195537527185
    },
    "pass": true
   },
@@ -139,9 +149,14 @@
     "n_neurons": 28,
     "pass": false
    },
+   "count_z": {
+    "mean_z2": 0.7551228088073256,
+    "n_neurons": 33,
+    "n_abs_z_gt_3": 0
+   },
    "speed": {
-    "ms_per_trial_mean": 45.0908555333328,
-    "real_time_factor": 22.177445696517417
+    "ms_per_trial_mean": 57.61611246666677,
+    "real_time_factor": 17.356256039984302
    },
    "pass": false
   },
@@ -184,9 +199,14 @@
     "n_neurons": 360,
     "pass": true
    },
+   "count_z": {
+    "mean_z2": 0.5149317825497813,
+    "n_neurons": 388,
+    "n_abs_z_gt_3": 0
+   },
    "speed": {
-    "ms_per_trial_mean": 864.9947708666674,
-    "real_time_factor": 1.1560763529218405
+    "ms_per_trial_mean": 1255.8189583666656,
+    "real_time_factor": 0.7962931227767202
    },
    "pass": true
   },
@@ -229,9 +249,14 @@
     "n_neurons": 318,
     "pass": true
    },
+   "count_z": {
+    "mean_z2": 0.5229215794558153,
+    "n_neurons": 381,
+    "n_abs_z_gt_3": 0
+   },
    "speed": {
-    "ms_per_trial_mean": 668.6655430333344,
-    "real_time_factor": 1.495515972699296
+    "ms_per_trial_mean": 569.3359875666681,
+    "real_time_factor": 1.7564320925399117
    },
    "pass": true
   },
@@ -274,9 +299,14 @@
     "n_neurons": 203,
     "pass": true
    },
+   "count_z": {
+    "mean_z2": 0.7096564600448301,
+    "n_neurons": 264,
+    "n_abs_z_gt_3": 0
+   },
    "speed": {
-    "ms_per_trial_mean": 545.2127735333343,
-    "real_time_factor": 1.8341463159774265
+    "ms_per_trial_mean": 545.1183055333337,
+    "real_time_factor": 1.8344641701614084
    },
    "pass": true
   },
@@ -319,9 +349,14 @@
     "n_neurons": 362,
     "pass": true
    },
+   "count_z": {
+    "mean_z2": 0.8830623167888043,
+    "n_neurons": 405,
+    "n_abs_z_gt_3": 0
+   },
    "speed": {
-    "ms_per_trial_mean": 885.6336764333329,
-    "real_time_factor": 1.1291350211830795
+    "ms_per_trial_mean": 816.8110861333345,
+    "real_time_factor": 1.224273295228956
    },
    "pass": true
   },
@@ -364,9 +399,14 @@
     "n_neurons": 330,
     "pass": true
    },
+   "count_z": {
+    "mean_z2": 0.4160496890327799,
+    "n_neurons": 387,
+    "n_abs_z_gt_3": 0
+   },
    "speed": {
-    "ms_per_trial_mean": 752.5753348666684,
-    "real_time_factor": 1.3287706275640392
+    "ms_per_trial_mean": 1099.6575125000022,
+    "real_time_factor": 0.9093740447665045
    },
    "pass": true
   },
@@ -409,9 +449,14 @@
     "n_neurons": 423,
     "pass": true
    },
+   "count_z": {
+    "mean_z2": 0.3995218370309773,
+    "n_neurons": 476,
+    "n_abs_z_gt_3": 0
+   },
    "speed": {
-    "ms_per_trial_mean": 1191.4260140333324,
-    "real_time_factor": 0.8393303387884756
+    "ms_per_trial_mean": 1647.780313933337,
+    "real_time_factor": 0.6068770160343451
    },
    "pass": true
   },
@@ -454,9 +499,14 @@
     "n_neurons": 378,
     "pass": true
    },
+   "count_z": {
+    "mean_z2": 0.4161469027065042,
+    "n_neurons": 417,
+    "n_abs_z_gt_3": 0
+   },
    "speed": {
-    "ms_per_trial_mean": 1060.1184109666647,
-    "real_time_factor": 0.943290852847423
+    "ms_per_trial_mean": 1446.3164040333359,
+    "real_time_factor": 0.6914116421630182
    },
    "pass": true
   },
@@ -499,9 +549,14 @@
     "n_neurons": 416,
     "pass": true
    },
+   "count_z": {
+    "mean_z2": 0.3929109705215051,
+    "n_neurons": 439,
+    "n_abs_z_gt_3": 0
+   },
    "speed": {
-    "ms_per_trial_mean": 1012.0291182000025,
-    "real_time_factor": 0.9881138615641836
+    "ms_per_trial_mean": 3523.2105014000067,
+    "real_time_factor": 0.28383203319887734
    },
    "pass": true
   },
@@ -544,9 +599,14 @@
     "n_neurons": 64,
     "pass": true
    },
+   "count_z": {
+    "mean_z2": 0.4808512250043629,
+    "n_neurons": 69,
+    "n_abs_z_gt_3": 0
+   },
    "speed": {
-    "ms_per_trial_mean": 105.70586120000128,
-    "real_time_factor": 9.460213356645808
+    "ms_per_trial_mean": 154.75104439999558,
+    "real_time_factor": 6.46199192953575
    },
    "pass": true
   },
@@ -589,9 +649,14 @@
     "n_neurons": 276,
     "pass": true
    },
+   "count_z": {
+    "mean_z2": 0.7790659068300094,
+    "n_neurons": 351,
+    "n_abs_z_gt_3": 0
+   },
    "speed": {
-    "ms_per_trial_mean": 398.3978304999977,
-    "real_time_factor": 2.510053829221356
+    "ms_per_trial_mean": 553.3087986999928,
+    "real_time_factor": 1.807309051201634
    },
    "pass": true
   },
@@ -634,9 +699,14 @@
     "n_neurons": 82,
     "pass": true
    },
+   "count_z": {
+    "mean_z2": 0.34120869254261493,
+    "n_neurons": 96,
+    "n_abs_z_gt_3": 0
+   },
    "speed": {
-    "ms_per_trial_mean": 436.2750917666689,
-    "real_time_factor": 2.2921317739011
+    "ms_per_trial_mean": 465.22130556667304,
+    "real_time_factor": 2.149514624619197
    },
    "pass": true
   },
@@ -679,9 +749,14 @@
     "n_neurons": 161,
     "pass": true
    },
+   "count_z": {
+    "mean_z2": 0.407248663473238,
+    "n_neurons": 247,
+    "n_abs_z_gt_3": 0
+   },
    "speed": {
-    "ms_per_trial_mean": 545.0042082666672,
-    "real_time_factor": 1.8348482173750595
+    "ms_per_trial_mean": 518.1811514333396,
+    "real_time_factor": 1.929827044526615
    },
    "pass": true
   },
@@ -724,9 +799,14 @@
     "n_neurons": 267,
     "pass": true
    },
+   "count_z": {
+    "mean_z2": 0.6876991131707592,
+    "n_neurons": 335,
+    "n_abs_z_gt_3": 0
+   },
    "speed": {
-    "ms_per_trial_mean": 782.8013833333292,
-    "real_time_factor": 1.2774632509485284
+    "ms_per_trial_mean": 989.2731889333285,
+    "real_time_factor": 1.0108431232006172
    },
    "pass": true
   },
@@ -769,9 +849,14 @@
     "n_neurons": 347,
     "pass": true
    },
+   "count_z": {
+    "mean_z2": 0.6139040938638993,
+    "n_neurons": 408,
+    "n_abs_z_gt_3": 0
+   },
    "speed": {
-    "ms_per_trial_mean": 1069.4428416000019,
-    "real_time_factor": 0.9350663365083561
+    "ms_per_trial_mean": 6161.823992966671,
+    "real_time_factor": 0.16228960793775288
    },
    "pass": true
   }

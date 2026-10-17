@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Flybrain Live</title>
+<meta name="description" content="The whole fruit-fly brain (138,639 neurons, 15 million connections) simulated live in your browser with the Shiu et al. 2024 model. Press sugar and watch the proboscis motor neuron fire.">
+<meta name="theme-color" content="#0e1117">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+} }
+</script>
+</head>
+<body>
+<canvas id="gl" role="img" aria-label="Three-dimensional point cloud of the 138,639 neurons of an adult fruit-fly brain, each drawn at its position in the FlyWire connectome; spiking neurons flash"></canvas>
+<div class="atmos" aria-hidden="true"></div>
+<div id="tags" aria-hidden="true"></div>
+<div id="tip" class="tip" role="status" hidden></div>
+
+<header class="titleblock">
+  <p class="kicker"><span class="dot"></span>FLYBRAIN&nbsp;LIVE<span class="sep">/</span>WHOLE-BRAIN SIMULATION</p>
+  <h1>The whole fly brain,<br>firing live in this tab.</h1>
+  <p class="sub"><b id="nN">138,639</b> neurons and <b id="nE">15.1 million</b> connections from the FlyWire connectome, simulated with the Shiu&nbsp;et&nbsp;al. 2024 model. Press a taste.</p>
+  <ul class="legend" aria-label="Legend">
+    <li><i class="lg lg-e"></i>excitatory spike</li>
+    <li><i class="lg lg-i"></i>inhibitory spike</li>
+    <li><i class="lg lg-r"></i>stimulated sensory neurons</li>
+  </ul>
+</header>
+
+<nav class="topright" aria-label="Page">
+  <button id="btnFocus" class="chip" type="button" title="Fly to the feeding circuit (F)"><span>Focus feeding circuit</span><kbd>F</kbd></button>
+  <button id="btnAbout" class="chip chip-solid" type="button" aria-controls="drawer" aria-expanded="false"><span>About &amp; validation</span><kbd>I</kbd></button>
+</nav>
+
+<aside class="card readout" aria-label="Live readouts">
+  <div class="rd-head"><span class="micro">MN9 &middot; proboscis rostrum motor neuron</span><span class="micro mute" id="refNote">reference: none</span></div>
+  <div class="rd-main">
+    <div class="rate"><output id="mn9Rate" aria-live="off">0</output><span class="unit">Hz</span></div>
+    <svg id="glyph" class="glyph" viewBox="0 0 64 64" aria-hidden="true">
+      <g class="head">
+        <path class="hd" d="M12 26c0-10 9-17 20-17s20 7 20 17c0 9-6 15-12 18H24c-6-3-12-9-12-18z"/>
+        <ellipse class="ey" cx="22" cy="25" rx="7.5" ry="10" transform="rotate(14 22 25)"/>
+        <ellipse class="ey" cx="42" cy="25" rx="7.5" ry="10" transform="rotate(-14 42 25)"/>
+        <path class="an" d="M29 15l-3-8M35 15l3-8"/>
+      </g>
+      <g id="prob" class="prob">
+        <path class="pr" d="M32 41v9"/>
+        <path class="lab" d="M32 50c-4 0-5 3-5 5s2 3 5 3 5-1 5-3-1-5-5-5z"/>
+      </g>
+    </svg>
+  </div>
+  <div class="meter" id="meter" role="meter" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="MN9 firing rate">
+    <div class="band" id="band" hidden></div>
+    <div class="fill" id="fill"></div>
+    <div class="ticks"><span>0</span><span>25</span><span>50</span><span>75</span><span>100 Hz</span></div>
+  </div>
+  <dl class="stats">
+    <div><dt>sim time</dt><dd id="sTime">0.000 s</dd></div>
+    <div><dt>spikes / s</dt><dd id="sSpk">0</dd></div>
+    <div><dt>neurons firing</dt><dd id="sAct">0</dd></div>
+    <div><dt>MN9 ipsilateral</dt><dd id="sIpsi">0 Hz</dd></div>
+    <div class="wide"><dt>engine throughput</dt><dd id="sRtf">&ndash;</dd></div>
+  </dl>
+</aside>
+
+<aside class="card rasterbox" aria-label="Spike raster of the most active neurons">
+  <div class="rd-head"><span class="micro">100 most active neurons &middot; last 400 ms</span><span class="micro mute">sorted by latency</span></div>
+  <canvas id="raster" width="560" height="440"></canvas>
+</aside>
+
+<section class="controls" aria-label="Stimulus controls">
+  <p class="micro ctl-title">STIMULUS &middot; taste neurons (GRNs)</p>
+  <div class="keys" role="group" aria-label="Taste">
+    <button class="key" data-stim="sugar" type="button" aria-pressed="false"><i class="pip pip-sugar"></i><span class="k-num">1</span><span class="k-main">Sugar<small>21 neurons &middot; 100 Hz</small></span></button>
+    <button class="key" data-stim="water" type="button" aria-pressed="false"><i class="pip pip-water"></i><span class="k-num">2</span><span class="k-main">Water<small>18 neurons &middot; 200 Hz</small></span></button>
+    <button class="key" data-stim="bitter" type="button" aria-pressed="false"><i class="pip pip-bitter"></i><span class="k-num">3</span><span class="k-main">Bitter<small>21 neurons &middot; 200 Hz</small></span></button>
+    <button class="key" data-stim="sugar+bitter" type="button" aria-pressed="false"><i class="pip pip-sugar"></i><i class="pip pip-bitter pip2"></i><span class="k-num">4</span><span class="k-main">Sugar + Bitter<small>100 Hz + 200 Hz</small></span></button>
+    <button class="key key-clear" data-stim="none" type="button" aria-pressed="true"><span class="k-num">0</span><span class="k-main">Clear<small>silence the inputs</small></span></button>
+  </div>
+  <div class="sliders">
+    <label class="sl"><span class="micro">DRIVE</span><input id="drive" type="range" min="0.25" max="2" step="0.05" value="1" aria-label="Input drive relative to the paper's rate"><output id="driveOut">&times;1.00</output></label>
+    <div class="sl speed" role="group" aria-label="Playback speed"><span class="micro">SPEED</span>
+      <button data-speed="0.05" type="button">0.05&times;</button><button data-speed="0.1" type="button">0.1&times;</button><button data-speed="0.25" type="button">0.25&times;</button><button data-speed="1" type="button">1&times;</button>
+    </div>
+    <div class="row-tools">
+      <button id="btnPause" class="tool" type="button" aria-pressed="false"><span>Pause</span><kbd>Space</kbd></button>
+      <button id="btnReset" class="tool" type="button"><span>Reset</span><kbd>R</kbd></button>
+      <button id="btnLines" class="tool" type="button" aria-pressed="true"><span>Cascade lines</span><kbd>L</kbd></button>
+    </div>
+  </div>
+</section>
+
+<footer class="credit">Wiring: FlyWire (Dorkenwald&nbsp;et&nbsp;al. 2024, Schlegel&nbsp;et&nbsp;al. 2024; CC&#8209;BY&nbsp;4.0) &middot; Model: Shiu&nbsp;et&nbsp;al., <i>Nature</i> 634:210 (2024) &middot; Simulation re-implemented in JS, validated against the authors' Brian2 code</footer>
+
+<div id="loading" class="loading" role="status" aria-live="polite">
+  <div class="ld-inner">
+    <p class="micro">FLYBRAIN&nbsp;LIVE</p>
+    <p class="ld-title" id="ldTitle">Placing 138,639 neurons&hellip;</p>
+    <div class="ld-bar"><i id="ldFill"></i></div>
+    <p class="micro mute" id="ldNote">connectome 30.7 MB, decoded locally</p>
+  </div>
+</div>
+
+<aside id="drawer" class="drawer" aria-hidden="true" aria-label="About, validation and limits" tabindex="-1">
+  <button id="btnClose" class="close" type="button" aria-label="Close">&times;</button>
+  <div class="dr-scroll">
+    <p class="kicker"><span class="dot"></span>ABOUT</p>
+    <h2>What you are looking at</h2>
+    <p>Every dot is one of the <b>138,639 neurons</b> of an adult female <i>Drosophila</i> brain, drawn where the electron-microscopy reconstruction (FlyWire, public release 783) places it. The simulation below runs on your machine: each neuron is a leaky integrate-and-fire unit and each of the <b>15.1 million</b> neuron-to-neuron connections (54.5 million synapses) delivers a signed, weighted kick 1.8&nbsp;ms after the sender fires. The model is the one published by Shiu&nbsp;et&nbsp;al. (<i>Nature</i> 2024), re-implemented in JavaScript.</p>
+    <p>Press <b>Sugar</b>: 21 sugar-sensing taste neurons are driven with Poisson input at 100&nbsp;Hz, activity spreads through the wiring, and the motor neuron that lifts the proboscis (<b>MN9</b>) starts firing, the paper's headline prediction. Add <b>Bitter</b> and the inhibition reaches MN9 and silences it.</p>
+
+    <h3>What is real</h3>
+    <ul>
+      <li>The wiring: who synapses onto whom, and how many synapses (FlyWire connectome v783, 138,639 proofread neurons).</li>
+      <li>The positions: each dot sits at the neuron's backbone anchor point (or cell body) in the volume; FlyWire voxels are 4&times;4&times;40&nbsp;nm, so the brain is not squashed.</li>
+      <li>The sign of every connection: the presynaptic neuron's predicted neurotransmitter (excitatory or inhibitory), taken from the paper's connectivity file.</li>
+    </ul>
+    <h3>What is modelled</h3>
+    <ul>
+      <li>Leaky integrate-and-fire neurons: rest &minus;52&nbsp;mV, threshold &minus;45&nbsp;mV, membrane 20&nbsp;ms, synaptic decay 5&nbsp;ms, refractory 2.2&nbsp;ms, delay 1.8&nbsp;ms. One free parameter, the weight per synapse (0.275&nbsp;mV).</li>
+      <li>A taste is 18&ndash;21 sensory neurons receiving Poisson spikes (the paper's optogenetic-style input). Nothing else is driven; there is no spontaneous activity.</li>
+      <li>Not modelled: gap junctions, neuromodulation, plasticity, dendritic structure, graded neurons. As the authors state, absolute firing rates are not predictions; the relative effects are.</li>
+    </ul>
+
+    <h3>How it was validated</h3>
+    <p>The JavaScript engine mirrors the exact update Brian2 executes for the authors' <code>model.py</code>. Against the authors' own code, on the same FlyWire graph:</p>
+    <div class="tbl-wrap"><table id="valTable" class="tbl"><thead><tr><th>MN9 rate, Hz</th><th>Authors&rsquo; files (v630)</th><th>Brian2 (v783)</th><th>this engine (v783)</th></tr></thead><tbody id="valBody"><tr><td colspan="3">loading&hellip;</td></tr></tbody></table></div>
+    <p class="note" id="valNote"></p>
+    <h3>Honest limits</h3>
+    <ul>
+      <li>Rates on this page are for the paper's chosen inputs (sugar 100&nbsp;Hz is the paper's calibration point; water and bitter at 200&nbsp;Hz are our picks from the dose-response, not the paper's).</li>
+      <li>Playback is slowed down (0.05&ndash;1&times; real time) so you can see the cascade. The engine itself runs faster than real time on a recent laptop.</li>
+      <li>Water GRN list: 7 of the paper's 18 &ldquo;water&rdquo; neurons are labelled sugar neurons in the newer v783 annotation; we use the paper's lists as published. Three neuron IDs changed between FlyWire v630 and v783 and were re-matched by synaptic-partner similarity.</li>
+      <li>Cascade lines show, for each neuron that fires, the last presynaptic neuron whose excitatory spike arrived within 15&nbsp;ms. It is a plausible cause, not a proof.</li>
+    </ul>
+    <h3>Credits and licences</h3>
+    <p class="credits">Connectome: FlyWire, Dorkenwald&nbsp;et&nbsp;al., <i>Nature</i> 634 (2024) and Schlegel&nbsp;et&nbsp;al., <i>Nature</i> 634 (2024); annotations from flyconnectome/flywire_annotations (CC&#8209;BY&nbsp;4.0). Model and connectivity file: Shiu, Sterne, Spiller&nbsp;et&nbsp;al., <i>Nature</i> 634:210&ndash;219 (2024), doi:10.1038/s41586-024-07763-9 (code: philshiu/Drosophila_brain_model, MIT). Reference simulator: Brian2. Rendering: three.js. Type: Inter Tight, JetBrains Mono. Built by Reza Teshnizi; source and the full validation tables are in the repository.</p>
+  </div>
+</aside>
+
+<script type="module" src="app.js"></script>
+<noscript><p style="position:fixed;inset:auto 16px 16px 16px;color:#e8ecf5;font:14px sans-serif">This page needs JavaScript and WebGL2 to run the simulation.</p></noscript>
+</body>
+</html>
