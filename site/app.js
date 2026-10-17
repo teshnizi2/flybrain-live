@@ -45,7 +45,7 @@ async function boot() {
   setLoading('Placing 138,639 neurons…', 0.1);
   const N = meta.N, S = meta.sections;
   const sec = (name, T, len) => new T(buf, S[name].offset, len);
-  const q = sec(qs.get('pos') === 'soma' ? 'pos_soma' : 'pos_anchor', Uint16Array, N * 3);
+  const q = sec(qs.get('pos') === 'anchor' ? 'pos_anchor' : 'pos_soma', Uint16Array, N * 3);   // default: cell bodies (backbone anchor where a neuron has none)
   const cls = sec('super_class', Uint8Array, N), nt = sec('nt', Uint8Array, N), sgn = sec('sign', Uint8Array, N), side = sec('side', Uint8Array, N), ctype = sec('cell_type', Uint16Array, N);
   signArr = sgn; tips = { cls, nt, side, ctype };
   const lo = meta.bbox_um.lo, hi = meta.bbox_um.hi;

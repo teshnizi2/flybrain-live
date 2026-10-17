@@ -1,0 +1,17 @@
+{
+ "command": "node --test tests/*.test.mjs",
+ "tests": 41,
+ "pass": 41,
+ "fail": 0,
+ "skipped": 0,
+ "wall_seconds": 138.0,
+ "exit_code": 0,
+ "files": [
+  "engine.test.mjs",
+  "graph.test.mjs",
+  "oracle.test.mjs",
+  "prng.test.mjs",
+  "replay.test.mjs",
+  "stats.test.mjs"
+ ]
+}

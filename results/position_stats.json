@@ -1,0 +1,49 @@
+{
+ "n_model_neurons": 138639,
+ "n_annotated_with_position": 138625,
+ "n_drawn_at_cell_body": 118086,
+ "n_drawn_at_backbone_anchor": 20539,
+ "n_not_drawn_no_annotation": 14,
+ "by_super_class": {
+  "ascending": {
+   "n": 1736,
+   "with_soma": 0
+  },
+  "central": {
+   "n": 32379,
+   "with_soma": 32375
+  },
+  "descending": {
+   "n": 1299,
+   "with_soma": 1299
+  },
+  "endocrine": {
+   "n": 76,
+   "with_soma": 76
+  },
+  "motor": {
+   "n": 110,
+   "with_soma": 110
+  },
+  "optic": {
+   "n": 77530,
+   "with_soma": 75673
+  },
+  "sensory": {
+   "n": 16352,
+   "with_soma": 10
+  },
+  "sensory_ascending": {
+   "n": 581,
+   "with_soma": 0
+  },
+  "visual_centrifugal": {
+   "n": 524,
+   "with_soma": 523
+  },
+  "visual_projection": {
+   "n": 8038,
+   "with_soma": 8020
+  }
+ }
+}

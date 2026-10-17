@@ -9,7 +9,7 @@ validated against the paper's own Brian2 code. See BRIEF.md and ../visual-series
 no ALICE, no publishing, no push; commits have no attribution lines).
 
 ## Status: DONE except final polish/verification
-Everything in BRIEF "Done means" exists and is verified (see README for the tables, all generated from results/):
+Default positions = cell bodies (`?pos=anchor` for backbone anchors; chosen after a side-by-side render, soma shows the real brain silhouette). Everything in BRIEF "Done means" exists and is verified (see README for the tables, all generated from results/):
 - page runs locally with all neurons (`cd site && python3 -m http.server`), media exist, engine tests pass.
 
 ## Key decisions
@@ -34,7 +34,7 @@ Everything in BRIEF "Done means" exists and is verified (see README for the tabl
 - `reference/` Brian2 drivers (run_brian2.py, replay_brian2.py), conditions.py, compare_authors_v630.py, sets_*.json
 - `tools/` fetch_data.sh, prepare_data.py, graph_codec.py, pack_graph.py, map_v630_ids.py, validate_engine.mjs, replay_check.mjs,
   epsilon_study.mjs, bench_engine.mjs, responder_spread.mjs, capture.mjs + capture_timeline.mjs, smoke_page.mjs, build_page_data.py, build_readme.py
-- `tests/` (`npm test`, 36 tests): oracle fixtures from Brian2, engine, prng, graph codec, source tracking, full-network replays
+- `tests/` (`npm test`, 41 tests incl. a ~4 min statistical JS-vs-Brian2 test): oracle fixtures from Brian2, engine, prng, graph codec, source tracking, full-network replays
 - `results/` all numbers (JSON), `results/reference/` Brian2 + JS runs and replay files; `docs/MODEL.md`; `README.md`, `POST.md`
 - `media/flybrain-1080x1350.mp4` (20 s), `media/hero.png` (2160x2700), `media/phone-375.png`
 - Not in git: data/raw, vendor, .venv, node_modules, tmp.
@@ -44,7 +44,7 @@ Brian2 / JS: sugar100 68.7 / 67.1 | sugar200 93.3 / 95.1 | water200 30.3 / 32.4 
 Authors' shipped v630 files: sugar100 67.0 (JS v630 66.7, Brian2 v630 69.6), sugar200 93.3 (92.5, 92.8); per-neuron rate r = 1.000.
 Replay: 5 whole-brain conditions, 44,328 spikes, identical (eps 0 and 1e-7). JS vs Brian2 stochastic: 16 of 17 conditions meet all
 pre-stated criteria; sugar_10 misses the r >= 0.98 criterion (0.977) on ~250 spikes per trial (z2 = 0.76, replay identical).
-Engine speed (Node, M4 shared with other jobs): medians 1.3x-3.6x real time over 7 stimuli; browser worker 1.8x at 1x playback.
+Engine speed (Node, M4 shared with other jobs): medians 1.3x-3.6x real time over 7 stimuli; in the page (headless Edge, load ~12-14) 0.9x-1.4x (results/browser_speed.json).
 
 ## How to resume / regenerate
 See README "Reproduce". Quick checks: `npm test`; `node tools/smoke_page.mjs`; `python tools/build_readme.py`.

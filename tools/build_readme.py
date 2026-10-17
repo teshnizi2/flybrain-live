@@ -9,14 +9,13 @@ R = ROOT / "results"
 J = lambda p: json.loads((R / p).read_text())
 
 sizes = J("data_sizes.json"); speed = J("engine_speed.json"); eps = J("epsilon_study.json"); rep = J("replay_summary.json")
-v783 = J("validation_js_vs_brian2_783.json"); v630 = J("validation_js_vs_brian2_630.json"); lite = J("validation_jslite_vs_brian2_783.json"); spread = J("responder_spread.json"); bspeed = J("browser_speed.json")
+v783 = J("validation_js_vs_brian2_783.json"); v630 = J("validation_js_vs_brian2_630.json"); lite = J("validation_jslite_vs_brian2_783.json"); spread = J("responder_spread.json"); pstats = J("position_stats.json"); bspeed = J("browser_speed.json")
 auth = J("validation_vs_authors_v630.json"); paper = J("paper_numbers.json"); smoke = J("page_smoke.json"); nt = J("nt_sign_check.json")
 b2 = lambda g, c: J(f"reference/brian2_{g}_{c}.json"); jsr = lambda g, c: J(f"reference/js_{g}_{c}.json")
 f1 = lambda x: f"{x:,.1f}"; f0 = lambda x: f"{x:,.0f}"
 ms = lambda d, w="contra": f"{d['mn9_rate_hz'][w]['mean']:.1f} &plusmn; {d['mn9_rate_hz'][w]['std']:.1f}"
 N, E = 138639, sizes["graph_full"]["E"]
-_t = subprocess.run(["node", "--test", *sorted(str(p) for p in (ROOT / "tests").glob("*.test.mjs"))], capture_output=True, text=True, cwd=ROOT).stdout
-n_tests = int(re.search(r"^# tests (\d+)", _t, re.M).group(1)); n_tests_pass = int(re.search(r"^# pass (\d+)", _t, re.M).group(1))
+_ts = J("test_summary.json"); n_tests, n_tests_pass = _ts["tests"], _ts["pass"]
 
 # ---- headline table: sugar 100 and 200 Hz, all five sources
 a100, a200 = paper["authors_shipped_outputs_v630"]["sugar_100"], paper["authors_shipped_outputs_v630"]["sugar_200"]
@@ -93,7 +92,7 @@ Needs a browser with WebGL2 and `DecompressionStream` (Chrome/Edge 80+, Safari 1
 {sizes['graph_full']['gzip9']/1e6:.1f} MB (the connectome, gzip) plus {sizes['neurons']['gzip9']/1e6:.1f} MB (positions and labels), decodes it in a worker
 (about {speed['graph']['gunzip_ms'] + speed['graph']['decode_ms']:,} ms in Node) and holds ~{speed['graph']['typed_array_mb']:.0f} MB of typed arrays. `?graph=lite` loads the
 {sizes['graph_lite_ge2']['gzip9']/1e6:.1f} MB thresholded graph (edges with at least 2 synapses; selected automatically on devices reporting 2 GB of RAM or less).
-Other URL options: `?stim=sugar|water|bitter|sugar%2Bbitter`, `?speed=0.05|0.1|0.25|1`, `?pos=soma` (cell bodies instead of backbone anchor points), `?lines=0`.
+Other URL options: `?stim=sugar|water|bitter|sugar%2Bbitter`, `?speed=0.05|0.1|0.25|1`, `?pos=anchor` (backbone anchor points instead of cell bodies: a sparser, star-map look), `?lines=0`.
 
 Controls: keys `1`-`4` stimuli, `0` clear, `Space` pause, `R` reset, `F` fly to the feeding circuit, `L` cascade lines, `I` about/validation.
 Hover a neuron for its cell type, class and transmitter. Playback is slowed (default 0.1x real time) so the cascade is visible.
@@ -197,7 +196,7 @@ load average {bspeed['machine']['loadavg_at_start'][0]:.0f} on {bspeed['machine'
 |---|---|---|
 {chr(10).join(f"| {c} | {r['achieved_x_real_time']:.2f}x | {r['engine_readout_median']}x / {r['engine_readout_max']}x |" for c, r in bspeed['runs'].items())}
 
-So the page sustains roughly real time or better under load, well above the 0.1x playback it uses by default, and faster on a quiet machine (the first smoke run, quieter, reported 1.8x).
+So the page sustains roughly real time or better under load, well above the 0.1x playback it uses by default, and a quiet machine should do better.
 `tools/smoke_page.mjs` / `results/page_smoke.json`: {k['headless_fps_during_cascade']:.0f} fps in headless Edge during a cascade; sugar gave MN9 {k['sugar_after_8s']['mn9_hz']:.0f} Hz after ~8 s at 1x playback
 (engine readout "{k['sugar_after_8s']['engine']}" at that moment), sugar + bitter gave {k['sugar_plus_bitter_after_7s']['mn9_hz']:.0f} Hz, no console errors, the graph in the page had N = {k['engine_graph']['N']:,} neurons and E = {k['engine_graph']['E']:,} connections, no horizontal scroll at 375 px.
 
@@ -225,7 +224,7 @@ Nothing depends on the wall clock, so the video is reproducible. The ~1080x1080 
 * **Page** (`site/`): three.js points at the neurons' positions (FlyWire voxels are 4x4x40 nm; the frame is a view onto the fly's face), a per-point "last spike time" so only spiking neurons
   are written each frame, additive blending + bloom, cascade lines from the last excitatory sender before each spike, a raster of the 100 most active neurons sorted by latency.
   Colour: amber = excitatory spike, ice-blue = inhibitory spike.
-* **Tests** (`npm test`, {n_tests_pass} of {n_tests} pass): Brian2-oracle fixtures, constants, PRNG, graph codec, source tracking, and the full-network replays.
+* **Tests** (`npm test`, {n_tests_pass} of {n_tests} pass): Brian2-oracle fixtures, constants, PRNG, graph codec, source tracking, the full-network replays, and `tests/stats.test.mjs` (4 gustatory conditions x 30 trials against the Brian2 JSON with a stated criterion, plus a negative control that must reject a 20 % weaker stimulus).
 
 ## Honest limits
 
@@ -235,7 +234,8 @@ Nothing depends on the wall clock, so the video is reproducible. The ~1080x1080 
   Seven of the paper's 18 "water" neurons are annotated sugar GRNs in v783; the paper's lists are used as published.
 * Sugar 100 Hz is the paper's calibration point. Water 200 Hz and Bitter 200 Hz are our picks from the dose-response, not the paper's.
 * Brian2 here is 2.10.1 (the paper used 2.5.1); the validation is against the authors' model code, not their 2.5.1 binaries. The sugar-10 Hz condition misses one correlation criterion (see above).
-* "Cascade lines" show the last excitatory sender before each spike (within 15 ms): plausible cause, not proof. Positions are neuron backbone anchor points (`?pos=soma` for cell bodies); sensory neurons have no cell body in the volume.
+* "Cascade lines" show the last excitatory sender before each spike (within 15 ms): plausible cause, not proof. Positions are cell bodies for {pstats['n_drawn_at_cell_body']:,} neurons and backbone anchor points for the {pstats['n_drawn_at_backbone_anchor']:,} (mostly sensory) whose cell bodies lie outside the volume; {pstats['n_not_drawn_no_annotation']} neurons without an annotation are not drawn (`results/position_stats.json`).
+* The paper's figure grids (e.g. sugar x bitter, sugar x water, silencing screens) were not compared one by one: the authors' raw output archive (several GB) was not downloaded. We compared against the shipped example outputs, the text claims, and our own Brian2 runs of the same model.
 * Playback is slowed down for viewing; the speed tables are what the engine sustains on one laptop (a single worker thread) while the machine was busy with other jobs, so they are lower bounds for a quiet laptop.
 
 ## Reproduce

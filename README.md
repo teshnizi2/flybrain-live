@@ -20,7 +20,7 @@ Needs a browser with WebGL2 and `DecompressionStream` (Chrome/Edge 80+, Safari 1
 30.7 MB (the connectome, gzip) plus 2.0 MB (positions and labels), decodes it in a worker
 (about 316 ms in Node) and holds ~91 MB of typed arrays. `?graph=lite` loads the
 17.1 MB thresholded graph (edges with at least 2 synapses; selected automatically on devices reporting 2 GB of RAM or less).
-Other URL options: `?stim=sugar|water|bitter|sugar%2Bbitter`, `?speed=0.05|0.1|0.25|1`, `?pos=soma` (cell bodies instead of backbone anchor points), `?lines=0`.
+Other URL options: `?stim=sugar|water|bitter|sugar%2Bbitter`, `?speed=0.05|0.1|0.25|1`, `?pos=anchor` (backbone anchor points instead of cell bodies: a sparser, star-map look), `?lines=0`.
 
 Controls: keys `1`-`4` stimuli, `0` clear, `Space` pause, `R` reset, `F` fly to the feeding circuit, `L` cascade lines, `I` about/validation.
 Hover a neuron for its cell type, class and transmitter. Playback is slowed (default 0.1x real time) so the cascade is visible.
@@ -181,7 +181,7 @@ load average 12 on 10 cores at the start (the machine was shared with other jobs
 | water | 1.12x | 1.1x / 1.4x |
 | sugar+bitter | 1.42x | 1.4x / 1.6x |
 
-So the page sustains roughly real time or better under load, well above the 0.1x playback it uses by default, and faster on a quiet machine (the first smoke run, quieter, reported 1.8x).
+So the page sustains roughly real time or better under load, well above the 0.1x playback it uses by default, and a quiet machine should do better.
 `tools/smoke_page.mjs` / `results/page_smoke.json`: 51 fps in headless Edge during a cascade; sugar gave MN9 68 Hz after ~8 s at 1x playback
 (engine readout "0.9× real time · playing 1×" at that moment), sugar + bitter gave 0 Hz, no console errors, the graph in the page had N = 138,639 neurons and E = 15,091,983 connections, no horizontal scroll at 375 px.
 
@@ -213,7 +213,7 @@ Nothing depends on the wall clock, so the video is reproducible. The ~1080x1080 
 * **Page** (`site/`): three.js points at the neurons' positions (FlyWire voxels are 4x4x40 nm; the frame is a view onto the fly's face), a per-point "last spike time" so only spiking neurons
   are written each frame, additive blending + bloom, cascade lines from the last excitatory sender before each spike, a raster of the 100 most active neurons sorted by latency.
   Colour: amber = excitatory spike, ice-blue = inhibitory spike.
-* **Tests** (`npm test`, 36 of 36 pass): Brian2-oracle fixtures, constants, PRNG, graph codec, source tracking, and the full-network replays.
+* **Tests** (`npm test`, 41 of 41 pass): Brian2-oracle fixtures, constants, PRNG, graph codec, source tracking, the full-network replays, and `tests/stats.test.mjs` (4 gustatory conditions x 30 trials against the Brian2 JSON with a stated criterion, plus a negative control that must reject a 20 % weaker stimulus).
 
 ## Honest limits
 
@@ -223,7 +223,8 @@ Nothing depends on the wall clock, so the video is reproducible. The ~1080x1080 
   Seven of the paper's 18 "water" neurons are annotated sugar GRNs in v783; the paper's lists are used as published.
 * Sugar 100 Hz is the paper's calibration point. Water 200 Hz and Bitter 200 Hz are our picks from the dose-response, not the paper's.
 * Brian2 here is 2.10.1 (the paper used 2.5.1); the validation is against the authors' model code, not their 2.5.1 binaries. The sugar-10 Hz condition misses one correlation criterion (see above).
-* "Cascade lines" show the last excitatory sender before each spike (within 15 ms): plausible cause, not proof. Positions are neuron backbone anchor points (`?pos=soma` for cell bodies); sensory neurons have no cell body in the volume.
+* "Cascade lines" show the last excitatory sender before each spike (within 15 ms): plausible cause, not proof. Positions are cell bodies for 118,086 neurons and backbone anchor points for the 20,539 (mostly sensory) whose cell bodies lie outside the volume; 14 neurons without an annotation are not drawn (`results/position_stats.json`).
+* The paper's figure grids (e.g. sugar x bitter, sugar x water, silencing screens) were not compared one by one: the authors' raw output archive (several GB) was not downloaded. We compared against the shipped example outputs, the text claims, and our own Brian2 runs of the same model.
 * Playback is slowed down for viewing; the speed tables are what the engine sustains on one laptop (a single worker thread) while the machine was busy with other jobs, so they are lower bounds for a quiet laptop.
 
 ## Reproduce

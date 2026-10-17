@@ -38,7 +38,7 @@ const page = await browser.newPage();
 await page.setViewport({ width: W, height: H, deviceScaleFactor: DPR });
 page.on('console', m => { if (['error', 'warning'].includes(m.type())) console.log('[page]', m.type(), m.text()); });
 page.on('pageerror', e => console.log('[pageerror]', e.message));
-await page.goto(`http://127.0.0.1:${port}/index.html?capture=1&dpr=${DPR}&seed=1`, { waitUntil: 'load' });
+await page.goto(`http://127.0.0.1:${port}/index.html?capture=1&dpr=${DPR}&seed=1${args.pos ? '&pos=' + args.pos : ''}`, { waitUntil: 'load' });
 await page.evaluate(() => document.fonts.ready);
 console.log('waiting for the connectome to load in the page...');
 await page.waitForFunction(() => window.__capture, { timeout: 60000 });
@@ -61,7 +61,7 @@ async function stepFrame(i, { render, snap }) {
 }
 
 if (args.hero) {
-  const target = Math.round(HERO_T * FPS);
+  const target = Math.round((args.herot ? +args.herot : HERO_T) * FPS);
   for (let i = 0; i < target - 14; i++) await stepFrame(i, { render: false });
   for (let i = target - 14; i < target; i++) await stepFrame(i, { render: true });   // let the smoothed readouts settle
   await stepFrame(target, { render: true, snap: true });

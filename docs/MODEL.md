@@ -112,6 +112,23 @@ Sets: sugar 21 GRNs, bitter 21, water 18, Ir94e 18; MN9 contralateral = 72057594
 (ii) 7 of the paper's 18 "water" neurons are annotated sugar GRNs (LB3c) in v783, and the paper's "sugar" list
 contains high-salt (LB3d) and LB4b neurons: we reproduce the paper's lists as published.
 
+### Stimulation protocols in `figures.ipynb` (Poisson rate of the GRNs, 30 trials x 1000 ms each)
+
+| figure | what is activated | rates |
+|---|---|---|
+| 1d | the 21 sugar GRNs | 10-200 Hz in steps of 10 |
+| 1e | each of the top-200 sugar-responding neurons alone (MN9 readout) | 25-200 Hz in steps of 25 |
+| 1f | sugar GRNs with each top-200 neuron silenced in turn (`silence()` sets its outgoing weights to 0) | 50-120 Hz in steps of 10 |
+| 2 | 106 cell types of the subesophageal zone (`sez_neurons.pickle`), both MN9 read | 50, 100, 150, 200 Hz |
+| 3a, 3b | sugar GRNs (`r_poi`) and bitter (3a) or Ir94e (3b) GRNs (`r_poi2`) together | both 0-200 Hz in steps of 20 |
+| 4a-4c | the 18 water GRNs; top-200 water responders alone; silencing | 20-260 Hz (steps of 20); 25-200 Hz; 160-220 Hz |
+| 4e | sugar (0-200 Hz, steps of 20) x water (0-260 Hz, steps of 20) | grid |
+| 5 | Johnston's-organ neurons (antennal grooming; aDN1, aDN2, aBN1 readouts) | 20-220 Hz |
+
+This project runs the gustatory subset that the page needs (`reference/conditions.py`): sugar 10/25/50/100/150/200 Hz, water 100/150/200/260 Hz, bitter 100/200 Hz,
+sugar 100 Hz combined with bitter 50/100/200 Hz, water 100 Hz or Ir94e 100 Hz. The authors' complete raw output (several GB, doi:10.17617/3.CZODIW) was not downloaded, so the full
+grids of figures 3 and 4 were not compared point by point.
+
 ## 7. Published numbers we compare against
 
 From the paper text (Shiu et al. 2024, open access, PMC11446845), v630: activation of MN9 in 100 % of simulations at
