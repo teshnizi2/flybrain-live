@@ -1,0 +1,26 @@
+{
+ "720575940620900446": {
+  "group": "sugar",
+  "best": 720575940639259967,
+  "cosine_best": 1.0,
+  "runner_up": 720575940618709371,
+  "cosine_runner_up": 0.4240550100803375,
+  "partners_in_v630": 117
+ },
+ "720575940618600651": {
+  "group": "bitter",
+  "best": 720575940619072513,
+  "cosine_best": 1.0,
+  "runner_up": 720575940620129182,
+  "cosine_runner_up": 0.34353646636009216,
+  "partners_in_v630": 103
+ },
+ "720575940645521262": {
+  "group": "mn9_paper_other_side",
+  "best": 720575940618238523,
+  "cosine_best": 0.999981701374054,
+  "runner_up": 720575940642449909,
+  "cosine_runner_up": 0.2769774794578552,
+  "partners_in_v630": 274
+ }
+}

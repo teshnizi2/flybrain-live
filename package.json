@@ -1,0 +1,12 @@
+{
+  "name": "flybrain-live",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Whole fruit-fly brain (FlyWire v783) simulated live in a browser tab with the Shiu et al. 2024 LIF model",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "test:fast": "node --test tests/oracle.test.mjs tests/engine.test.mjs tests/prng.test.mjs tests/graph.test.mjs"
+  },
+  "license": "MIT"
+}
