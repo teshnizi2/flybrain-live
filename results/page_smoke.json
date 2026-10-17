@@ -1,0 +1,25 @@
+{
+ "checks": {
+  "load_to_ready_ms": 1257,
+  "webgl_canvas": true,
+  "headless_fps_during_cascade": 53.3,
+  "sugar_after_8s": {
+   "mn9_hz": 63,
+   "sim_time": "7.890 s",
+   "spikes_per_s": "9,392",
+   "firing": "254",
+   "engine": "1.8× real time · playing 1×",
+   "ref": "Brian2 68.7 ± 4.8 Hz"
+  },
+  "sugar_plus_bitter_after_7s": {
+   "mn9_hz": 0,
+   "ref": "Brian2 0.1 ± 0.2 Hz"
+  },
+  "drawer_table_rows": 11,
+  "drawer_open": true,
+  "phone_no_horizontal_scroll": true,
+  "phone_mn9_hz": 60
+ },
+ "errors": [],
+ "pass": true
+}

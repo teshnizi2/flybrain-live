@@ -92,6 +92,7 @@ function onWorker(e) {
     setLoading('Ready', 1);
     $('#loading').classList.add('done'); setTimeout(() => { $('#loading').style.display = 'none'; }, 900);
     document.querySelectorAll('.key').forEach(b => { b.disabled = false; });
+    if (!CAPTURE && !qs.get('stim')) document.querySelector('.key[data-stim="sugar"]').classList.add('hint');
     worker.postMessage({ type: 'speed', value: state.speed });
     if (CAPTURE) window.__capReady?.();
     const s0 = (qs.get('stim') || '').replace(' ', '+'); if (s0 && PRESETS[s0]) setStim(s0);
@@ -127,6 +128,7 @@ function rebase(ms) {
 function groupsFor(name) { return PRESETS[name].map(([g, hz]) => ({ name: g, hz: hz * state.drive })); }
 function setStim(name) {
   state.stim = name;
+  document.querySelectorAll('.key.hint').forEach(b => b.classList.remove('hint'));
   document.querySelectorAll('.key').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.stim === name)));
   const groups = groupsFor(name);
   worker?.postMessage({ type: 'stim', groups });
