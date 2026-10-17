@@ -1,0 +1,40 @@
+{
+ "machine": {
+  "cpu": "Apple M4",
+  "cores": 10,
+  "loadavg_at_start": [
+   11.86083984375,
+   14.19091796875,
+   14.328125
+  ]
+ },
+ "playback_requested": 4,
+ "runs": {
+  "sugar": {
+   "wall_seconds": 15.3,
+   "simulated_seconds": 13.94,
+   "achieved_x_real_time": 0.91,
+   "engine_readout_median": 0.9,
+   "engine_readout_max": 1.1
+  },
+  "water": {
+   "wall_seconds": 15.2,
+   "simulated_seconds": 17.01,
+   "achieved_x_real_time": 1.12,
+   "engine_readout_median": 1.1,
+   "engine_readout_max": 1.4
+  },
+  "sugar+bitter": {
+   "wall_seconds": 15.4,
+   "simulated_seconds": 21.86,
+   "achieved_x_real_time": 1.42,
+   "engine_readout_median": 1.4,
+   "engine_readout_max": 1.6
+  }
+ },
+ "loadavg_at_end": [
+  11.00634765625,
+  13.68798828125,
+  14.13916015625
+ ]
+}

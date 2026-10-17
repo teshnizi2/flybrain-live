@@ -8,7 +8,7 @@ All 138,639 neurons and 15.1 million connections of the FlyWire connectome, runn
 
 It is not a lookalike. Given identical inputs it reproduces all 44,328 spikes of the authors' own Brian2 code, and over 30 trials MN9 agrees with the reference within noise (67.1 vs 68.7 Hz).
 
-It runs faster than real time on a laptop.
+It runs at about real time in a browser tab on a laptop.
 
 ## Alternative hooks
 
@@ -25,6 +25,6 @@ It runs faster than real time on a laptop.
 | MN9 about 67 Hz, 67.1 vs 68.7 Hz, 30 trials | `results/reference/js_783_sugar_100.json`, `results/reference/brian2_783_sugar_100.json`, `results/validation_js_vs_brian2_783.json` |
 | bitter makes it fall to zero | `results/reference/js_783_sugar_100__bitter_200.json` (0.1 Hz, Brian2 0.1 Hz) |
 | all 44,328 spikes reproduced | `results/replay_summary.json` (`tools/replay_check.mjs`, `reference/replay_brian2.py`) |
-| faster than real time | `results/engine_speed.json`: medians 2.44x to 3.62x for the four demo stimuli (M4, machine shared with other jobs) |
+| about real time in a tab | `results/browser_speed.json`: 0.9x to 1.4x in the page for sugar, water, sugar + bitter; `results/engine_speed.json`: 2.4x to 3.6x in Node for the four demo stimuli (M4, machine shared with other jobs) |
 
 Attach `media/flybrain-1080x1350.mp4`, or `media/hero.png` as the still. Link to the page only after it is deployed (not done: no publishing in this build).

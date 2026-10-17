@@ -86,8 +86,11 @@ function loop() {
       emit({});
     }
   }
-  setTimeout(loop, 8);
+  // when the engine is behind the requested playback speed, go again at once; otherwise idle ~8 ms between ticks
+  if (stepDebt >= 1 && !paused) tick.port2.postMessage(0); else setTimeout(loop, 8);
 }
+const tick = new MessageChannel();
+tick.port1.onmessage = () => loop();
 
 self.onmessage = async (e) => {
   const m = e.data;

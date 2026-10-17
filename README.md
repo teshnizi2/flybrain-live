@@ -170,9 +170,20 @@ Engine speed, whole brain, Node/V8 on Apple M4 (10 cores), eps = 1e-7 V, 5 s per
 | sugar_100__water_100 | 1.52x (1.17-1.57) | 15,058 | 12,206 |
 | water_260 | 1.53x (1.23-1.82) | 10,268 | 8,802 |
 
-Real-time factor = simulated seconds per wall second; the page's default playback is 0.1x. In headless Edge the page held 53 fps during a cascade and its worker reported
-"1.8× real time · playing 1×" at 1x playback (`tools/smoke_page.mjs`, `results/page_smoke.json`). Smoke test result: sugar gave MN9 63 Hz after ~8 s,
-sugar + bitter gave 0 Hz, no console errors, no horizontal scroll at 375 px.
+Real-time factor = simulated seconds per wall second; the page's default playback is 0.1x.
+
+Inside the real page (module worker + WebGL rendering on the main thread, headless Edge, playback requested at 4x so the engine is the bottleneck; `tools/bench_browser.mjs`),
+load average 12 on 10 cores at the start (the machine was shared with other jobs):
+
+| stimulus | achieved simulated seconds per wall second | engine's own readout (median / max) |
+|---|---|---|
+| sugar | 0.91x | 0.9x / 1.1x |
+| water | 1.12x | 1.1x / 1.4x |
+| sugar+bitter | 1.42x | 1.4x / 1.6x |
+
+So the page sustains roughly real time or better under load, well above the 0.1x playback it uses by default, and faster on a quiet machine (the first smoke run, quieter, reported 1.8x).
+`tools/smoke_page.mjs` / `results/page_smoke.json`: 51 fps in headless Edge during a cascade; sugar gave MN9 68 Hz after ~8 s at 1x playback
+(engine readout "0.9× real time · playing 1×" at that moment), sugar + bitter gave 0 Hz, no console errors, the graph in the page had N = 138,639 neurons and E = 15,091,983 connections, no horizontal scroll at 375 px.
 
 ### The lite graph (optional)
 
@@ -213,7 +224,7 @@ Nothing depends on the wall clock, so the video is reproducible. The ~1080x1080 
 * Sugar 100 Hz is the paper's calibration point. Water 200 Hz and Bitter 200 Hz are our picks from the dose-response, not the paper's.
 * Brian2 here is 2.10.1 (the paper used 2.5.1); the validation is against the authors' model code, not their 2.5.1 binaries. The sugar-10 Hz condition misses one correlation criterion (see above).
 * "Cascade lines" show the last excitatory sender before each spike (within 15 ms): plausible cause, not proof. Positions are neuron backbone anchor points (`?pos=soma` for cell bodies); sensory neurons have no cell body in the volume.
-* Playback is slowed down for viewing; the speed table is what the engine sustains on one laptop core under load.
+* Playback is slowed down for viewing; the speed tables are what the engine sustains on one laptop (a single worker thread) while the machine was busy with other jobs, so they are lower bounds for a quiet laptop.
 
 ## Reproduce
 
@@ -226,7 +237,7 @@ python reference/replay_brian2.py --graph 783 --cond sugar_100 --seed 123   # de
 python tools/prepare_data.py                          # site/data/* and sizes (~6 min)
 npm test                                              # engine tests incl. full-network replays (~1 min)
 node tools/validate_engine.mjs --graph 783 --conds all --trials 30          # JS vs Brian2 (+ --graph 630 after tools/pack_graph.py 630 tmp/graph_630.fbg.gz)
-node tools/epsilon_study.mjs && node tools/replay_check.mjs && node tools/bench_engine.mjs
+node tools/epsilon_study.mjs && node tools/replay_check.mjs && node tools/bench_engine.mjs && node tools/bench_browser.mjs && node tools/responder_spread.mjs
 python reference/compare_authors_v630.py && python tools/build_page_data.py
 node tools/capture.mjs --out media/flybrain-1080x1350.mp4 && node tools/capture.mjs --hero media/hero.png --dpr 2
 node tools/smoke_page.mjs && python tools/build_readme.py

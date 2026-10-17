@@ -34,6 +34,7 @@ async function run(w, h, label, fn) {
 const read = (page, sel) => page.$eval(sel, el => el.textContent.trim());
 await run(1440, 900, 'desktop', async (page, loadMs) => {
   out.checks.load_to_ready_ms = loadMs;
+  out.checks.engine_graph = await page.evaluate(() => window.__fb);
   out.checks.webgl_canvas = await page.$eval('#gl', c => !!(c.getContext && c.width > 0));
   await page.click('[data-stim="sugar"]');
   const fps = await page.evaluate(() => new Promise(res => { let n = 0; const t0 = performance.now(); (function f() { n++; if (performance.now() - t0 < 3000) requestAnimationFrame(f); else res(n / 3); })(); }));
@@ -55,7 +56,7 @@ await run(375, 812, 'phone', async (page) => {
   fs.mkdirSync(path.join(root, 'media'), { recursive: true });
   await page.screenshot({ path: path.join(root, 'media/phone-375.png') });
 });
-out.pass = out.errors.length === 0 && out.checks.phone_no_horizontal_scroll === true && out.checks.drawer_open === true;
+out.pass = out.errors.length === 0 && out.checks.engine_graph?.N === 138639 && out.checks.engine_graph?.E === 15091983 && out.checks.phone_no_horizontal_scroll === true && out.checks.drawer_open === true;
 fs.writeFileSync(path.join(root, 'results/page_smoke.json'), JSON.stringify(out, null, 1));
 console.log(JSON.stringify(out, null, 1));
 await browser.close(); server.close();

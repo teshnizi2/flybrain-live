@@ -89,6 +89,7 @@ function onWorker(e) {
     else if (m.phase === 'decode') setLoading('Wiring up 15.1 million synapses…', 0.86, 'decoding on a background thread');
   } else if (m.type === 'ready') {
     state.ready = true;
+    window.__fb = { N: m.N, E: m.E, graphBytes: m.bytes };
     setLoading('Ready', 1);
     $('#loading').classList.add('done'); setTimeout(() => { $('#loading').style.display = 'none'; }, 900);
     document.querySelectorAll('.key').forEach(b => { b.disabled = false; });

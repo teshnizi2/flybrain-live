@@ -9,7 +9,7 @@ R = ROOT / "results"
 J = lambda p: json.loads((R / p).read_text())
 
 sizes = J("data_sizes.json"); speed = J("engine_speed.json"); eps = J("epsilon_study.json"); rep = J("replay_summary.json")
-v783 = J("validation_js_vs_brian2_783.json"); v630 = J("validation_js_vs_brian2_630.json"); lite = J("validation_jslite_vs_brian2_783.json"); spread = J("responder_spread.json")
+v783 = J("validation_js_vs_brian2_783.json"); v630 = J("validation_js_vs_brian2_630.json"); lite = J("validation_jslite_vs_brian2_783.json"); spread = J("responder_spread.json"); bspeed = J("browser_speed.json")
 auth = J("validation_vs_authors_v630.json"); paper = J("paper_numbers.json"); smoke = J("page_smoke.json"); nt = J("nt_sign_check.json")
 b2 = lambda g, c: J(f"reference/brian2_{g}_{c}.json"); jsr = lambda g, c: J(f"reference/js_{g}_{c}.json")
 f1 = lambda x: f"{x:,.1f}"; f0 = lambda x: f"{x:,.0f}"
@@ -188,9 +188,18 @@ Engine speed, whole brain, Node/V8 on {speed['machine']['cpu']} ({speed['machine
 |---|---|---|---|
 {chr(10).join(sp_rows)}
 
-Real-time factor = simulated seconds per wall second; the page's default playback is 0.1x. In headless Edge the page held {k['headless_fps_during_cascade']:.0f} fps during a cascade and its worker reported
-"{k['sugar_after_8s']['engine']}" at 1x playback (`tools/smoke_page.mjs`, `results/page_smoke.json`). Smoke test result: sugar gave MN9 {k['sugar_after_8s']['mn9_hz']:.0f} Hz after ~8 s,
-sugar + bitter gave {k['sugar_plus_bitter_after_7s']['mn9_hz']:.0f} Hz, no console errors, no horizontal scroll at 375 px.
+Real-time factor = simulated seconds per wall second; the page's default playback is 0.1x.
+
+Inside the real page (module worker + WebGL rendering on the main thread, headless Edge, playback requested at 4x so the engine is the bottleneck; `tools/bench_browser.mjs`),
+load average {bspeed['machine']['loadavg_at_start'][0]:.0f} on {bspeed['machine']['cores']} cores at the start (the machine was shared with other jobs):
+
+| stimulus | achieved simulated seconds per wall second | engine's own readout (median / max) |
+|---|---|---|
+{chr(10).join(f"| {c} | {r['achieved_x_real_time']:.2f}x | {r['engine_readout_median']}x / {r['engine_readout_max']}x |" for c, r in bspeed['runs'].items())}
+
+So the page sustains roughly real time or better under load, well above the 0.1x playback it uses by default, and faster on a quiet machine (the first smoke run, quieter, reported 1.8x).
+`tools/smoke_page.mjs` / `results/page_smoke.json`: {k['headless_fps_during_cascade']:.0f} fps in headless Edge during a cascade; sugar gave MN9 {k['sugar_after_8s']['mn9_hz']:.0f} Hz after ~8 s at 1x playback
+(engine readout "{k['sugar_after_8s']['engine']}" at that moment), sugar + bitter gave {k['sugar_plus_bitter_after_7s']['mn9_hz']:.0f} Hz, no console errors, the graph in the page had N = {k['engine_graph']['N']:,} neurons and E = {k['engine_graph']['E']:,} connections, no horizontal scroll at 375 px.
 
 ### The lite graph (optional)
 
@@ -227,7 +236,7 @@ Nothing depends on the wall clock, so the video is reproducible. The ~1080x1080 
 * Sugar 100 Hz is the paper's calibration point. Water 200 Hz and Bitter 200 Hz are our picks from the dose-response, not the paper's.
 * Brian2 here is 2.10.1 (the paper used 2.5.1); the validation is against the authors' model code, not their 2.5.1 binaries. The sugar-10 Hz condition misses one correlation criterion (see above).
 * "Cascade lines" show the last excitatory sender before each spike (within 15 ms): plausible cause, not proof. Positions are neuron backbone anchor points (`?pos=soma` for cell bodies); sensory neurons have no cell body in the volume.
-* Playback is slowed down for viewing; the speed table is what the engine sustains on one laptop core under load.
+* Playback is slowed down for viewing; the speed tables are what the engine sustains on one laptop (a single worker thread) while the machine was busy with other jobs, so they are lower bounds for a quiet laptop.
 
 ## Reproduce
 
@@ -240,7 +249,7 @@ python reference/replay_brian2.py --graph 783 --cond sugar_100 --seed 123   # de
 python tools/prepare_data.py                          # site/data/* and sizes (~6 min)
 npm test                                              # engine tests incl. full-network replays (~1 min)
 node tools/validate_engine.mjs --graph 783 --conds all --trials 30          # JS vs Brian2 (+ --graph 630 after tools/pack_graph.py 630 tmp/graph_630.fbg.gz)
-node tools/epsilon_study.mjs && node tools/replay_check.mjs && node tools/bench_engine.mjs
+node tools/epsilon_study.mjs && node tools/replay_check.mjs && node tools/bench_engine.mjs && node tools/bench_browser.mjs && node tools/responder_spread.mjs
 python reference/compare_authors_v630.py && python tools/build_page_data.py
 node tools/capture.mjs --out media/flybrain-1080x1350.mp4 && node tools/capture.mjs --hero media/hero.png --dpr 2
 node tools/smoke_page.mjs && python tools/build_readme.py
