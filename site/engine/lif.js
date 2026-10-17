@@ -18,6 +18,7 @@
 // |v - v_0| <= epsV and |g| <= epsG to exact rest removes relaxing neurons from the set (approximation, tested).
 import { Sfc32 } from './prng.js';
 
+const SRC_LAG_STEPS = 150;               // an input counts as the cause of a spike if it arrived <= 15 ms earlier
 const MV = 0.001;                         // Brian2: 1 mV = 0.001 V (a double)
 const timestep = (t, dt) => Math.trunc((t + 1e-3 * dt) / dt);   // Brian2's _timestep
 
@@ -49,7 +50,9 @@ export const PARAMS = (() => {
 export class Engine {
   /**
    * @param csr   {N, offsets, targets, counts} (see graph.js)
-   * @param opts  {seed, epsV, epsG} epsV/epsG in volts; 0 = no snapping (exactly Brian2)
+   * @param opts  {seed, epsV, epsG, trackSources}  epsV/epsG in volts; 0 = no snapping (exactly Brian2).
+   *              trackSources: remember, per neuron, the presynaptic spike that last delivered excitatory input, and
+   *              report (source, target, step) when the target fires (used by the page to draw cascade lines).
    */
   constructor(csr, opts = {}) {
     this.N = csr.N; this.offsets = csr.offsets; this.targets = csr.targets; this.counts = csr.counts;
@@ -71,6 +74,11 @@ export class Engine {
     this.evSteps = new Int32Array(0); this.evIds = new Int32Array(0); this.evPos = 0;
     this.outSteps = new Int32Array(4096); this.outIds = new Int32Array(4096); this.nOut = 0;
     this.step = 0; this.totalSpikes = 0;
+    this.trackSources = !!opts.trackSources;
+    if (this.trackSources) {
+      this.srcId = new Int32Array(N).fill(-1); this.srcStep = new Int32Array(N).fill(-1000000000);
+      this.edgeSrc = new Int32Array(1024); this.edgeDst = new Int32Array(1024); this.edgeStep = new Int32Array(1024); this.nEdge = 0;
+    }
   }
 
   get time() { return this.step * PARAMS.dt; }
@@ -81,6 +89,7 @@ export class Engine {
     this.v.fill(PARAMS.v0); this.g.fill(0); this.lastSpike.fill(-1000000000);
     this.inActive.fill(0); this.nActive = 0; this.ringN.fill(0);
     this.evPos = 0; this.nOut = 0; this.step = 0; this.totalSpikes = 0;
+    if (this.trackSources) { this.srcId.fill(-1); this.srcStep.fill(-1000000000); this.nEdge = 0; }
     if (seed !== undefined) this.rng.seed(seed);
   }
 
@@ -109,6 +118,7 @@ export class Engine {
     const { offsets, targets, counts } = this;
     const { expG, A0, C9, expV, vTh, v0, vRst, wSyn, wPoi, delaySteps: D } = P;
     const epsV = this.epsV, epsG = this.epsG;
+    const trackSrc = this.trackSources, srcId = this.srcId, srcStep = this.srcStep;
     let nActive = this.nActive;
     for (let s = 0; s < nSteps; s++) {
       const n = this.step;
@@ -136,13 +146,28 @@ export class Engine {
       const slot = n % R, nDue = ringN[slot];
       if (nDue) {
         const due = this.ringIds[slot];
-        for (let q = 0; q < nDue; q++) {
-          const j = due[q], kEnd = offsets[j + 1];
-          for (let k = offsets[j]; k < kEnd; k++) {
-            const t = targets[k];
-            if (n - lastSpike[t] >= refSteps[t]) {
-              g[t] += counts[k] * wSyn;
-              if (inActive[t] === 0) { inActive[t] = 1; active[nActive++] = t; }
+        if (!trackSrc) {
+          for (let q = 0; q < nDue; q++) {
+            const j = due[q], kEnd = offsets[j + 1];
+            for (let k = offsets[j]; k < kEnd; k++) {
+              const t = targets[k];
+              if (n - lastSpike[t] >= refSteps[t]) {
+                g[t] += counts[k] * wSyn;
+                if (inActive[t] === 0) { inActive[t] = 1; active[nActive++] = t; }
+              }
+            }
+          }
+        } else {
+          for (let q = 0; q < nDue; q++) {
+            const j = due[q], kEnd = offsets[j + 1];
+            for (let k = offsets[j]; k < kEnd; k++) {
+              const t = targets[k];
+              if (n - lastSpike[t] >= refSteps[t]) {
+                const c = counts[k];
+                g[t] += c * wSyn;
+                if (c > 0) { srcId[t] = j; srcStep[t] = n; }
+                if (inActive[t] === 0) { inActive[t] = 1; active[nActive++] = t; }
+              }
             }
           }
         }
@@ -163,6 +188,7 @@ export class Engine {
             const i = ids[q];
             if (n - lastSpike[i] >= refSteps[i]) {
               v[i] += wPoi;
+              if (trackSrc) srcId[i] = -1;
               if (inActive[i] === 0) { inActive[i] = 1; active[nActive++] = i; }
             }
           }
@@ -174,6 +200,7 @@ export class Engine {
           const i = this.evIds[this.evPos];
           if (n - lastSpike[i] >= refSteps[i]) {
             v[i] += wPoi;
+            if (trackSrc) srcId[i] = -1;
             if (inActive[i] === 0) { inActive[i] = 1; active[nActive++] = i; }
           }
         }
@@ -187,12 +214,27 @@ export class Engine {
           const i = spkTmp[q];
           v[i] = vRst; g[i] = 0;
           this.outSteps[this.nOut] = n; this.outIds[this.nOut++] = i;
+          if (trackSrc) {
+            if (srcId[i] >= 0 && n - srcStep[i] <= SRC_LAG_STEPS) {
+              if (this.nEdge === this.edgeSrc.length) { this.edgeSrc = this._grow(this.edgeSrc); this.edgeDst = this._grow(this.edgeDst); this.edgeStep = this._grow(this.edgeStep); }
+              this.edgeSrc[this.nEdge] = srcId[i]; this.edgeDst[this.nEdge] = i; this.edgeStep[this.nEdge++] = n;
+            }
+            srcId[i] = -1;
+          }
         }
         this.totalSpikes += nSpk;
       }
       this.step = n + 1;
     }
     this.nActive = nActive;
+  }
+
+  /** Return and clear the (source, target, step) triples recorded since the last call (trackSources only). */
+  takeEdges() {
+    if (!this.trackSources) return { src: new Int32Array(0), dst: new Int32Array(0), step: new Int32Array(0) };
+    const out = { src: this.edgeSrc.slice(0, this.nEdge), dst: this.edgeDst.slice(0, this.nEdge), step: this.edgeStep.slice(0, this.nEdge) };
+    this.nEdge = 0;
+    return out;
   }
 
   /** Return and clear the spikes recorded since the last call: parallel arrays of step index and neuron index. */

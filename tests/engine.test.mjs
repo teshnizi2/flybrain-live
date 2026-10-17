@@ -90,3 +90,34 @@ test('stats: active set shrinks as neurons relax and counts spikes', () => {
   assert.equal(eng.step, 10000);
   assert.equal(eng.time, 10000 * PARAMS.dt);
 });
+
+// ---- source tracking (page feature): which presynaptic spike delivered the last excitatory input before a neuron fired ----
+test('trackSources: a chain 0 -> 1 -> 2 reports the causal edges (0->1, 1->2) with their spike steps', () => {
+  const eng = new Engine(csrFromEdges(3, [0, 1], [1, 2], [300, 300]), { epsV: 0, epsG: 0, trackSources: true });
+  eng.setNoRefractory([0]);
+  eng.setEventSchedule(Int32Array.from([10]), Int32Array.from([0]));
+  eng.run(400);
+  const sp = eng.takeSpikes(), ed = eng.takeEdges();
+  const spikes = Array.from(sp.ids, (id, k) => [sp.steps[k], id]);
+  assert.deepEqual(spikes.map(s => s[1]), [0, 1, 2]);
+  assert.deepEqual(Array.from(ed.src), [0, 1]);
+  assert.deepEqual(Array.from(ed.dst), [1, 2]);
+  assert.deepEqual(Array.from(ed.step), [spikes[1][0], spikes[2][0]]);   // edge is stamped with the step the target fired
+});
+
+test('trackSources: Poisson-driven neurons have no source; an inhibitory input is never reported as a cause', () => {
+  // 0 (Poisson) -> 1 (inhibitory, -200) ; 2 (Poisson) -> 1 (+300). Neuron 1 fires because of 2, not 0.
+  const eng = new Engine(csrFromEdges(3, [0, 2], [1, 1], [-200, 300]), { epsV: 0, epsG: 0, trackSources: true, seed: 2 });
+  eng.setPoisson('a', [0, 2], 40);
+  eng.run(20000);
+  const ed = eng.takeEdges();
+  assert.ok(ed.src.length > 0);
+  assert.ok(Array.from(ed.src).every(s => s === 2) && Array.from(ed.dst).every(d => d === 1));
+});
+
+test('trackSources off by default: takeEdges is empty and the hot loop is unchanged', () => {
+  const eng = new Engine(csrFromEdges(2, [0], [1], [400]));
+  eng.setNoRefractory([0]); eng.setEventSchedule(Int32Array.from([5]), Int32Array.from([0]));
+  eng.run(300);
+  assert.equal(eng.takeEdges().src.length, 0);
+});
