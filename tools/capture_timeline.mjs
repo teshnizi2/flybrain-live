@@ -17,7 +17,7 @@ export function timeline(t, { feed, home }, opts = {}) {
   let caption = '';
   if (t < 2.4) caption = `138,639 neurons<small>one fruit-fly brain, 15.1 million connections</small>`;
   else if (t < 5.6) caption = `Press SUGAR<small>21 taste neurons start firing</small>`;
-  else if (t < 11.3) caption = `Activity cascades to MN9<small>the motor neuron that lifts the proboscis</small>`;
+  else if (t < 11.3) caption = `Activity cascades to MN9<small>the motor neuron that extends the proboscis</small>`;
   else if (t < 16.4) caption = `Add BITTER<small>inhibition reaches MN9 and silences it</small>`;
   else caption = `Same inputs, same spikes<small>${NSPIKES} spikes identical to the authors' Brian2 code</small>`;
   // camera: a slow orbit that pushes in on the feeding circuit while sugar is on, then eases back

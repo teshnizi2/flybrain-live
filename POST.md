@@ -4,7 +4,7 @@
 
 I simulated a whole fruit-fly brain, live, in a browser tab.
 
-All 138,639 neurons and 15.1 million connections of the FlyWire connectome, running the Shiu et al. 2024 integrate-and-fire model, rebuilt in JavaScript. Press sugar: 21 taste neurons fire, activity cascades through the real wiring, and the motor neuron that lifts the proboscis (MN9) reaches about 67 Hz. Add bitter and it falls to zero.
+All 138,639 neurons and 15.1 million connections of the FlyWire connectome, running the Shiu et al. 2024 integrate-and-fire model, rebuilt in JavaScript. Press sugar: 21 taste neurons fire, activity cascades through the real wiring, and the motor neuron that extends the proboscis (MN9) reaches about 67 Hz. Add bitter and it falls to zero.
 
 It is not a lookalike. Given identical inputs it reproduces all 44,328 spikes of the authors' own Brian2 code, and over 30 trials MN9 agrees with the reference within noise (67.1 vs 68.7 Hz).
 

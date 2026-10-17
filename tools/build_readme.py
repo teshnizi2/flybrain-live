@@ -78,7 +78,7 @@ md = f"""# flybrain-live
 public release 783) with their real wiring ({E/1e6:.1f} million connections, 54.5 million synapses), driven by the leaky
 integrate-and-fire model of Shiu et al. 2024 (*Nature* 634:210), drawn at each neuron's true 3D position, and **checked
 against the authors' own Brian2 code**. Press *Sugar*: 21 taste neurons fire, activity cascades through the wiring, and
-the motor neuron that lifts the proboscis (MN9) starts firing, the paper's headline prediction. Add *Bitter* and MN9 goes silent.
+the motor neuron that extends the proboscis (MN9) starts firing, the paper's headline prediction. Add *Bitter* and MN9 goes silent.
 
 ![hero](media/hero.png)
 

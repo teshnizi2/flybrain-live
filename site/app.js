@@ -201,7 +201,7 @@ function setupTags() {
   mk('sugar', `SUGAR GRNs<small>21 taste neurons</small>`, '4.2rem', '-5.1rem', '-50deg', '4.9rem');
   mk('water', `WATER GRNs<small>18 taste neurons</small>`, '-12.2rem', '-5.4rem', '-130deg', '4.9rem');
   mk('bitter', `BITTER GRNs<small>21 taste neurons</small>`, '4.4rem', '3.9rem', '48deg', '5.3rem');
-  mk('mn9', `MN9<small>lifts the proboscis</small>`, '-11.4rem', '3.2rem', '132deg', '4.4rem');
+  mk('mn9', `MN9<small>extends the proboscis</small>`, '-11.4rem', '3.2rem', '132deg', '4.4rem');
 }
 function updateTags() {
   const act = new Set(PRESETS[state.stim].map(p => p[0]));
