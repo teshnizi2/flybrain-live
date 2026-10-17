@@ -1,0 +1,66 @@
+{
+ "conditions": [
+  "sugar_100",
+  "sugar_200",
+  "water_260",
+  "sugar_100__bitter_100"
+ ],
+ "seeds": [
+  11,
+  12,
+  13,
+  14,
+  15
+ ],
+ "sim_seconds_per_run": 1,
+ "results": {
+  "0": {
+   "runs": 20,
+   "identical_runs": 20,
+   "total_spikes": 230516,
+   "mismatched_spikes": 0,
+   "mean_ms_per_sim_second": 1959.7059604999988,
+   "mean_max_active": 11451.8
+  },
+  "1e-9": {
+   "runs": 20,
+   "identical_runs": 20,
+   "total_spikes": 230516,
+   "mismatched_spikes": 0,
+   "mean_ms_per_sim_second": 1968.0471833500003,
+   "mean_max_active": 10949.3
+  },
+  "1e-8": {
+   "runs": 20,
+   "identical_runs": 20,
+   "total_spikes": 230516,
+   "mismatched_spikes": 0,
+   "mean_ms_per_sim_second": 1490.3763394500018,
+   "mean_max_active": 10826.45
+  },
+  "1e-7": {
+   "runs": 20,
+   "identical_runs": 20,
+   "total_spikes": 230516,
+   "mismatched_spikes": 0,
+   "mean_ms_per_sim_second": 1464.7527519999976,
+   "mean_max_active": 10692.85
+  },
+  "0.000001": {
+   "runs": 20,
+   "identical_runs": 20,
+   "total_spikes": 230516,
+   "mismatched_spikes": 0,
+   "mean_ms_per_sim_second": 1362.7066749999992,
+   "mean_max_active": 10363.55
+  },
+  "0.00001": {
+   "runs": 20,
+   "identical_runs": 9,
+   "total_spikes": 230516,
+   "mismatched_spikes": 18960,
+   "mean_ms_per_sim_second": 1303.041101899999,
+   "mean_max_active": 9481.5
+  }
+ }
+}

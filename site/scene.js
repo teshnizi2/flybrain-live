@@ -203,7 +203,7 @@ export class BrainScene {
     const halfW = 4.9, tanH = Math.tan(this.camera.fov * Math.PI / 360);
     this.homeDist = Math.max(13.2, halfW / (tanH * aspect));
     this.refDist = this.homeDist;
-    if (w < 700) this.camera.setViewOffset(w, h, 0, Math.round(0.075 * h), w, h); else this.camera.clearViewOffset();
+    if (aspect < 0.9) this.camera.setViewOffset(w, h, 0, Math.round((w < 700 ? 0.075 : 0.05) * h), w, h); else this.camera.clearViewOffset();
     this.camera.updateProjectionMatrix();
     this.pointUniforms.uDpr.value = dpr;
     this.pointUniforms.uSize.value = 1.7 * (w < 700 ? 0.82 : 1);

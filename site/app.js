@@ -194,11 +194,11 @@ function toggleFocus() {
 const tagEls = {};
 function setupTags() {
   const host = $('#tags');
-  const mk = (id, html, dx, dy, ang) => { const el = document.createElement('div'); el.className = 'tag hide'; el.style.setProperty('--dx', dx); el.style.setProperty('--dy', dy); el.style.setProperty('--ang', ang); el.innerHTML = `<span>${html}</span>`; host.appendChild(el); tagEls[id] = el; };
-  mk('sugar', `SUGAR GRNs<small>21 taste neurons</small>`, '2.4rem', '-2.6rem', '-38deg');
-  mk('water', `WATER GRNs<small>18 taste neurons</small>`, '-9rem', '-3.2rem', '-142deg');
-  mk('bitter', `BITTER GRNs<small>21 taste neurons</small>`, '-9rem', '2.6rem', '142deg');
-  mk('mn9', `MN9<small>lifts the proboscis</small>`, '2.4rem', '2.2rem', '38deg');
+  const mk = (id, html, dx, dy, ang, len) => { const el = document.createElement('div'); el.className = 'tag hide'; el.style.setProperty('--len', len || '2.4rem'); el.style.setProperty('--dx', dx); el.style.setProperty('--dy', dy); el.style.setProperty('--ang', ang); el.innerHTML = `<span>${html}</span>`; host.appendChild(el); tagEls[id] = el; };
+  mk('sugar', `SUGAR GRNs<small>21 taste neurons</small>`, '4.2rem', '-5.1rem', '-50deg', '4.9rem');
+  mk('water', `WATER GRNs<small>18 taste neurons</small>`, '-12rem', '-5.4rem', '-130deg', '4.9rem');
+  mk('bitter', `BITTER GRNs<small>21 taste neurons</small>`, '-12rem', '3.2rem', '130deg', '4.2rem');
+  mk('mn9', `MN9<small>lifts the proboscis</small>`, '2.4rem', '2.2rem', '38deg', '2.6rem');
 }
 function updateTags() {
   const act = new Set(PRESETS[state.stim].map(p => p[0]));
@@ -266,9 +266,9 @@ function renderFrame(timeSec, nowWall, exact) {
   updateTags();
   if (nowWall - lastUi > 70 || exact) { lastUi = nowWall; updateReadouts(); raster.update(simNow); }
 }
-function updateReadouts() {
+function updateReadouts(exact) {
   rate.contra = windowRate(mn9.contra, simNow); rate.ipsi = windowRate(mn9.ipsi, simNow);
-  shownRate += (rate.contra - shownRate) * 0.35;
+  shownRate = exact === 'snap' ? rate.contra : shownRate + (rate.contra - shownRate) * 0.35;
   const r = Math.max(0, shownRate);
   $('#mn9Rate').textContent = fmt(r < 0.5 ? 0 : r);
   $('#fill').style.width = `${Math.min(100, r)}%`;
@@ -295,7 +295,10 @@ if (CAPTURE) {
     advance(steps) {
       return new Promise(res => { const id = (advance.n = (advance.n || 0) + 1); capWaiters.set(id, res); worker.postMessage({ type: 'advance', steps, reqId: id }); });
     },
-    render() { scene.controls.autoRotate = false; renderFrame(0, performance.now(), true); },
+    render(timeSec, snap) { scene.controls.autoRotate = false; renderFrame(timeSec ?? 0, performance.now(), true); if (snap) updateReadouts('snap'); },
+    setCaption(html) { const c = $('#caption'); c.innerHTML = html || ''; c.classList.toggle('on', !!html); },
+    feedingCentroid: () => { const c = scene.centroid([...key.sugar, key.mn9_contra, key.mn9_ipsi]); return [c.x, c.y, c.z]; },
+    homeDist: () => scene.homeDist,
     simTime: () => simNow,
     mn9: () => ({ contra: rate.contra, ipsi: rate.ipsi }),
   };
