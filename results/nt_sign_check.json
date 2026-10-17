@@ -1,0 +1,36 @@
+{
+ "n_with_outputs_and_annotation_nt": 137993,
+ "agreement_with_ach_da_5ht_oa_exc__gaba_glu_inh": 0.9563673519671287,
+ "n_exc": 96672,
+ "n_inh": 41333,
+ "n_no_outputs": 634,
+ "crosstab_top_nt_vs_sign": {
+  "exc": {
+   "NA": 5,
+   "acetylcholine": 84162,
+   "dopamine": 5897,
+   "gaba": 1348,
+   "glutamate": 2941,
+   "octopamine": 192,
+   "serotonin": 2127
+  },
+  "inh": {
+   "NA": 7,
+   "acetylcholine": 1719,
+   "dopamine": 3,
+   "gaba": 17731,
+   "glutamate": 21863,
+   "octopamine": 1,
+   "serotonin": 9
+  },
+  "no_out": {
+   "NA": 281,
+   "acetylcholine": 144,
+   "dopamine": 5,
+   "gaba": 68,
+   "glutamate": 54,
+   "octopamine": 17,
+   "serotonin": 65
+  }
+ }
+}
