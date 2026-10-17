@@ -10,7 +10,7 @@ import { decodeGraph } from '../site/engine/graph.js';
 import { Engine } from '../site/engine/lif.js';
 
 const graphPath = new URL('../site/data/graph_full.fbg.gz', import.meta.url);
-const conds = ['sugar_100', 'sugar_200', 'water_200', 'sugar_100__bitter_200'];
+const conds = ['sugar_10', 'sugar_100', 'sugar_200', 'water_200', 'sugar_100__bitter_200'];
 let graph = null;
 function getGraph() {
   if (!graph) { const raw = zlib.gunzipSync(fs.readFileSync(graphPath)); graph = decodeGraph(raw.buffer.slice(raw.byteOffset, raw.byteOffset + raw.byteLength)); }
@@ -26,7 +26,7 @@ function run(cond, eps) {
   return { ref, spikes: Array.from(s.steps, (st, k) => [st, s.ids[k]]) };
 }
 function check({ ref, spikes }) {
-  assert.ok(ref.spikes.length > 2000, 'reference should contain a real cascade');
+  assert.ok(ref.spikes.length > 200, 'reference should contain real activity');
   const n = Math.min(spikes.length, ref.spikes.length);
   for (let k = 0; k < n; k++) if (spikes[k][0] !== ref.spikes[k][0] || spikes[k][1] !== ref.spikes[k][1]) assert.fail(`first difference at spike #${k}: js ${spikes[k]} brian2 ${ref.spikes[k]}`);
   assert.equal(spikes.length, ref.spikes.length, 'spike count');

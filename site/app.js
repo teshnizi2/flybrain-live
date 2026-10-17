@@ -90,7 +90,7 @@ function onWorker(e) {
   } else if (m.type === 'ready') {
     state.ready = true;
     setLoading('Ready', 1);
-    $('#loading').classList.add('done');
+    $('#loading').classList.add('done'); setTimeout(() => { $('#loading').style.display = 'none'; }, 900);
     document.querySelectorAll('.key').forEach(b => { b.disabled = false; });
     worker.postMessage({ type: 'speed', value: state.speed });
     if (CAPTURE) window.__capReady?.();
@@ -179,7 +179,7 @@ function toggleDrawer(force) {
   if (open) d.focus({ preventScroll: true });
 }
 function homeView() {
-  scene.setCamera({ target: scene.vec(0).set(0.0, -0.35, 0.1), distance: 13.2, azimuth: 0.28, polar: 1.28 });
+  scene.setCamera({ target: scene.vec(0).set(0.0, -0.35, 0.1), distance: scene.homeDist, azimuth: 0.28, polar: 1.28 });
 }
 function toggleFocus() {
   state.focus = !state.focus;
@@ -187,7 +187,7 @@ function toggleFocus() {
   if (state.focus) {
     const c = scene.centroid([...key.sugar, key.mn9_contra, key.mn9_ipsi]);
     scene.flyTo({ target: c, distance: 5.4, azimuth: 0.55, polar: 1.32 }, 2200);
-  } else scene.flyTo({ target: scene.vec(0).set(0.0, -0.35, 0.1), distance: 13.2, azimuth: scene.getCameraState().azimuth, polar: 1.28 }, 2200);
+  } else scene.flyTo({ target: scene.vec(0).set(0.0, -0.35, 0.1), distance: scene.homeDist, azimuth: scene.getCameraState().azimuth, polar: 1.28 }, 2200);
 }
 
 // ------------------------------------------------------------------ labels, tooltip, about

@@ -25,7 +25,7 @@ const vec3 = (c) => new THREE.Vector3(c.r, c.g, c.b);
 const MARKER_COLORS = { sugar: '#f59e0b', water: '#7fd0ff', bitter: '#ff5c8a', ir94e: '#b9a4ff', mn9: '#ffffff' };
 
 const POINT_VS = /* glsl */`
-uniform float uSimNow, uTau, uSize, uBoost, uRef, uDpr, uBase, uGain, uHot;
+uniform float uSimNow, uTau, uSize, uBoost, uRef, uDpr, uBase, uGain, uHot, uTime;
 uniform vec3 uPalette[11];
 uniform vec3 uFlashE, uFlashI;
 attribute float aSpike, aCls, aSign;
@@ -36,7 +36,7 @@ void main() {
   float f = age >= 0.0 ? exp(-age / uTau) : 0.0;
   f = f < 0.004 ? 0.0 : f;
   int ci = int(aCls + 0.5);
-  vec3 base = uPalette[ci] * uBase;
+  vec3 base = uPalette[ci] * uBase * (1.0 + 0.16 * sin(uTime * 0.7 + dot(position, vec3(1.7, 1.3, 2.1))));
   vec3 fc = aSign > 1.5 ? uFlashI : uFlashE;
   float hot = smoothstep(0.30, 1.0, f);
   vec3 flashCol = mix(fc, vec3(1.0), hot * uHot) * f * uGain;
@@ -109,7 +109,7 @@ export class BrainScene {
     const scene = this.scene = new THREE.Scene();
     scene.background = new THREE.Color('#0e1117');
     const camera = this.camera = new THREE.PerspectiveCamera(32, 1, 0.1, 200);
-    this.refDist = 13;
+    this.refDist = 13; this.homeDist = 13.2;
     camera.position.set(2.4, 3.6, 12.2);
 
     // ---- neuron points
@@ -131,7 +131,7 @@ export class BrainScene {
     const palette = CLASS_COLORS.map(h => { const c = new THREE.Color(h); return new THREE.Vector3(c.r, c.g, c.b); });
     const uni = this.pointUniforms = {
       uSimNow: { value: 0 }, uTau: { value: 14 }, uSize: { value: 1.7 }, uBoost: { value: 7 }, uRef: { value: this.refDist }, uDpr: { value: renderer.getPixelRatio() },
-      uBase: { value: 0.40 }, uGain: { value: 1.15 }, uHot: { value: 0.9 }, uPalette: { value: palette },
+      uTime: { value: 0 }, uBase: { value: 0.40 }, uGain: { value: 1.15 }, uHot: { value: 0.9 }, uPalette: { value: palette },
       uFlashE: { value: vec3(new THREE.Color('#ffb43a')) },
       uFlashI: { value: vec3(new THREE.Color('#6f86ff')) },
     };
@@ -196,9 +196,14 @@ export class BrainScene {
     const dpr = Math.min(window.devicePixelRatio || 1, this.maxDpr);
     this.renderer.setPixelRatio(dpr); this.renderer.setSize(w, h, false);
     this.composer.setPixelRatio(dpr); this.composer.setSize(w, h);
-    this.camera.aspect = w / h;
-    // keep the brain fully in frame in portrait: widen the field of view as the aspect shrinks
-    this.camera.fov = w / h < 1 ? 32 / Math.max(0.62, (w / h) ** 0.55) : 32;
+    const aspect = w / h;
+    this.camera.aspect = aspect;
+    // portrait: widen the field of view and back the camera off so the whole brain still fits across the screen
+    this.camera.fov = aspect >= 1 ? 32 : 32 + 20 * Math.min(1, (1 - aspect) / 0.55);
+    const halfW = 4.9, tanH = Math.tan(this.camera.fov * Math.PI / 360);
+    this.homeDist = Math.max(13.2, halfW / (tanH * aspect));
+    this.refDist = this.homeDist;
+    if (w < 700) this.camera.setViewOffset(w, h, 0, Math.round(0.075 * h), w, h); else this.camera.clearViewOffset();
     this.camera.updateProjectionMatrix();
     this.pointUniforms.uDpr.value = dpr;
     this.pointUniforms.uSize.value = 1.7 * (w < 700 ? 0.82 : 1);
@@ -316,7 +321,7 @@ export class BrainScene {
       this.controls.target.copy(t);
       this.camera.position.copy(t).add(new THREE.Vector3().setFromSpherical(sph));
     }
-    this.markUniforms.uTime.value = timeSec;
+    this.markUniforms.uTime.value = timeSec; this.pointUniforms.uTime.value = timeSec;
     this.controls.update();
     this.pointUniforms.uRef.value = this.refDist;
     this.composer.render();

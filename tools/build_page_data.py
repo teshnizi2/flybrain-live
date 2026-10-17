@@ -29,8 +29,10 @@ for label, cond, auth in rows:
     if auth: r["authors"] = {"mean": authors[auth]["mn9"]["contra"]["mean"], "sd": authors[auth]["mn9"]["contra"]["std"]}
     table.append(r)
 val = json.loads((R / "validation_js_vs_brian2_783.json").read_text()) if (R / "validation_js_vs_brian2_783.json").exists() else None
+rep = json.loads((R / "replay_summary.json").read_text())
 note = ("MN9 contralateral to the stimulated neurons, mean &plusmn; sd over 30 trials of 1&nbsp;s. &ldquo;Authors&rdquo; = spike files shipped with the paper's code (FlyWire v630); "
-        "the other two columns use v783. Deterministic replay of identical input events: every spike of four full-brain runs (44,080 spikes) is reproduced exactly.")
+        f"the other two columns use v783. Deterministic replay of identical input events: every one of {rep['total_spikes_per_mode']:,} spikes in {rep['n_conditions']} full-brain runs is reproduced exactly "
+        f"({'identical' if rep['all_identical'] else 'NOT identical'}).")
 (ROOT / "site/data/reference.json").write_text(json.dumps({"presets": presets, "table": table, "note": note,
                                                            "validation_pass": (val or {}).get("all_pass")}, indent=1))
 print("wrote site/data/reference.json", len(table), "rows;", sum('js' in r for r in table), "with JS numbers")

@@ -176,6 +176,6 @@
    }
   }
  ],
- "note": "MN9 contralateral to the stimulated neurons, mean &plusmn; sd over 30 trials of 1&nbsp;s. &ldquo;Authors&rdquo; = spike files shipped with the paper's code (FlyWire v630); the other two columns use v783. Deterministic replay of identical input events: every spike of four full-brain runs (44,080 spikes) is reproduced exactly.",
+ "note": "MN9 contralateral to the stimulated neurons, mean &plusmn; sd over 30 trials of 1&nbsp;s. &ldquo;Authors&rdquo; = spike files shipped with the paper's code (FlyWire v630); the other two columns use v783. Deterministic replay of identical input events: every one of 44,328 spikes in 5 full-brain runs is reproduced exactly (identical).",
  "validation_pass": false
 }
