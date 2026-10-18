@@ -112,7 +112,7 @@ input[type=range]::-moz-range-thumb { width: .62rem; height: 1rem; background: v
 .tool { display: inline-flex; align-items: center; gap: .5rem; background: transparent; border: 1px solid var(--hair); border-radius: 2px; padding: .36rem .55rem; font-size: .72rem; font-weight: 500; color: #c8d0e2; transition: all .15s; }
 .tool:hover { border-color: #51648c; color: var(--text); }
 .tool[aria-pressed="true"] { border-color: rgba(245, 158, 11, .6); color: var(--text); }
-.credit { position: fixed; z-index: 2; left: var(--pad); right: var(--pad); bottom: .85rem; font: 400 .6rem/1.3 var(--mono); letter-spacing: .03em; color: #6c7790; pointer-events: none; text-align: right; }
+.credit { position: fixed; z-index: 2; left: var(--pad); right: var(--pad); bottom: .85rem; font: 400 .6rem/1.3 var(--mono); letter-spacing: .03em; color: #8190ab; pointer-events: none; text-align: right; }
 .credit i { font-style: italic; }
 
 /* ---------- tags in 3D ---------- */
@@ -226,9 +226,109 @@ input[type=range]::-moz-range-thumb { width: .62rem; height: 1rem; background: v
   .dr-scroll { padding: 3.2rem 1.15rem 2.5rem; }
   .ld-inner { margin-bottom: 9rem; }
 }
+@media (max-width: 760px) { .loading { place-items: start center; padding-top: calc(var(--sat) + 13rem); } .ld-inner { margin-bottom: 0; } }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
 }
+/* ---------- touch, safe areas, small screens, motion ---------- */
+:root { --sat: env(safe-area-inset-top, 0px); --sar: env(safe-area-inset-right, 0px); --sab: env(safe-area-inset-bottom, 0px); --sal: env(safe-area-inset-left, 0px); }
+.titleblock { top: calc(var(--pad) + var(--sat)); left: calc(var(--pad) + var(--sal)); }
+.topright { top: calc(var(--pad) + var(--sat)); right: calc(var(--pad) + var(--sar)); }
+.chip-pause { display: none; }
+.lite-note { color: var(--amber); }
+.lite-note a { color: inherit; pointer-events: auto; text-underline-offset: .15em; display: inline-block; padding: .55rem 0; }
+.ld-start { margin-top: 1rem; pointer-events: auto; min-height: 44px; }
+.loading:has(.ld-start:not([hidden])) { pointer-events: auto; }
+a { color: inherit; }
+a.chip { text-decoration: none; }
+.ld-inner a { color: var(--amber); pointer-events: auto; }
+.is-paused .kicker .dot, .is-paused .key.hint { animation-play-state: paused; }
+
+/* tablet portrait and phone: the Pause button lives in the top nav (the tool row is hidden there) */
+@media (max-aspect-ratio: 1/1) and (min-width: 761px) { .chip-pause { display: inline-flex; } }
+
+/* no hover on touch: nothing may depend on it, and sticky hover states must not stay painted after a tap */
+@media (hover: none) {
+  .key:hover:not(:disabled) { transform: none; background: var(--card); border-color: var(--hair); }
+  .key[aria-pressed="true"]:hover { border-color: var(--amber); background: linear-gradient(90deg, rgba(245, 158, 11, .17), rgba(245, 158, 11, .04)); }
+  .chip:hover, .sl.speed button:hover, .tool:hover, .close:hover { border-color: var(--hair); background: var(--card); color: inherit; }
+  .chip-solid:hover { border-color: rgba(245, 158, 11, .5); }
+  .sl.speed button[aria-pressed="true"]:hover { background: var(--amber); color: var(--bg); border-color: var(--amber); }
+}
+/* tap targets of at least 44 px on touch devices and phone widths */
+@media (pointer: coarse), (max-width: 760px) {
+  .chip, .tool, .key, .sl.speed button { min-height: 44px; }
+  .chip { justify-content: center; }
+  .close { width: 44px; height: 44px; top: calc(.5rem + var(--sat)); right: .6rem; }
+  input[type=range] { height: 44px; }
+  input[type=range]::-webkit-slider-thumb { width: 1.1rem; height: 1.8rem; margin-top: -.9rem; }
+  input[type=range]::-moz-range-thumb { width: 1.1rem; height: 1.8rem; }
+}
+@media (max-width: 760px) {
+  .titleblock { right: calc(8.6rem + var(--sar)); }
+  .topright { right: calc(.9rem + var(--sar)); }
+  .topright .chip { min-width: 7.2rem; }
+  .chip-pause { display: inline-flex; }
+  .micro { font-size: .72rem; }
+  .key small, .stats dt { font-size: .66rem; }
+  .readout { left: calc(.9rem + var(--sal)); right: calc(.9rem + var(--sar)); bottom: calc(var(--sab) + 17.6rem); }
+  .controls { left: calc(.9rem + var(--sal)); right: calc(.9rem + var(--sar)); bottom: calc(var(--sab) + 3.2rem); }
+  .credit { left: calc(var(--pad) + var(--sal)); right: calc(var(--pad) + var(--sar)); bottom: calc(var(--sab) + .4rem); font-size: .62rem; }
+  .key { min-height: 44px; }
+  .sl { grid-template-columns: 3.4rem 1fr auto; }
+  .sl.speed { grid-template-columns: 3.2rem repeat(4, 1fr); }
+  .sliders { gap: 0; margin-top: .2rem; }
+  .sub { font-size: .86rem; }
+  .tip { max-width: min(16rem, 80vw); }
+  .dr-scroll { padding-bottom: calc(2.5rem + var(--sab)); }
+}
+@media (max-width: 400px) { .tag { display: none; } }
+/* short phones (SE-size screens, in-app browsers with toolbars): keep the brain visible */
+@media (max-width: 760px) and (max-height: 760px) {
+  .sub, .stats, .credit { display: none; }
+  .readout .meter { margin-bottom: .9rem; }
+}
+@media (max-width: 400px) { .credit { display: none; } }
+
+/* phone held sideways (short and wide): one compact column of controls left, readout right, no title text */
+@media (max-height: 520px) and (min-width: 561px) {
+  html { font-size: 12.5px; }
+  :root { --pad: .8rem; }
+  .sub, .legend, .rasterbox, .chip kbd, .readout .rd-head .mute, .ctl-title, .stats .wide, .stats > div:nth-child(4), .credit, .key small, #btnFocus { display: none; }
+  .titleblock { width: 18rem; }
+  h1 { font-size: 1.25rem; }
+  .kicker { margin-bottom: .35rem; }
+  .topright { flex-direction: row; }
+  .readout { top: calc(var(--pad) + var(--sat) + 4.6rem); right: calc(var(--pad) + var(--sar)); left: auto; bottom: auto; width: 17rem; padding: .5rem .7rem .55rem; }
+  .rate output { font-size: 2.2rem; }
+  .glyph { width: 2.2rem; height: 2.2rem; }
+  .meter { margin-bottom: .9rem; }
+  .controls { left: calc(var(--pad) + var(--sal)); bottom: calc(var(--pad) + var(--sab)); width: min(26rem, 52vw); right: auto; }
+  .keys { grid-template-columns: repeat(5, 1fr); gap: .25rem; }
+  .key { grid-template-columns: 1fr; gap: .2rem; padding: .35rem .4rem; }
+  .key .k-num { display: none; }
+  .key .k-main { font-size: .72rem; }
+  .key-clear { grid-template-columns: 1fr; }
+  .key:has(.pip2) { grid-template-columns: 1fr; }
+  .sliders { grid-template-columns: 1fr; margin-top: .3rem; gap: 0; }
+  .row-tools { display: none; }
+  .chip-pause { display: inline-flex; }
+  .ld-inner { margin-bottom: 2rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .kicker .dot, .key.hint { animation: none; }
+}
+
+/* ---------- fallback panel (no WebGL2 / no streams / scripts blocked) ---------- */
+.fallback { position: fixed; inset: 0; z-index: 20; overflow-y: auto; background: var(--bg); padding: calc(var(--pad) + var(--sat)) calc(var(--pad) + var(--sar)) calc(var(--pad) + var(--sab)) calc(var(--pad) + var(--sal)); }
+.fallback[hidden] { display: none; }
+.fb-inner { max-width: 34rem; margin: 0 auto; line-height: 1.5; color: #c3cce0; font-size: 1rem; }
+.fb-inner h2 { font-size: 1.5rem; line-height: 1.15; letter-spacing: -.02em; margin: .6rem 0 .8rem; color: var(--text); }
+.fb-inner img { display: block; width: 100%; height: auto; border: 1px solid var(--hair); margin: 1rem 0; }
+.fb-why { color: var(--amber); }
+.fb-inner .chip { display: inline-flex; padding: .6rem .9rem; }
+.fb-fallback body { overflow: auto; }
+
 /* capture mode: static, no hover effects, no focus rings */
 body.capture * { cursor: none !important; transition: none !important; }
 body.capture .kicker .dot { animation: none; }

@@ -6,6 +6,7 @@
 <title>Flybrain Live</title>
 <meta name="description" content="The whole fruit-fly brain (138,639 neurons, 15 million connections) simulated live in your browser with the Shiu et al. 2024 model. Press sugar and watch the proboscis motor neuron fire.">
 <meta name="theme-color" content="#0e1117">
+<meta name="color-scheme" content="dark">
 <link rel="canonical" href="https://flybrain.teshnizi.dev/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Flybrain Live">
@@ -21,11 +22,34 @@
 <meta name="twitter:title" content="Flybrain Live: the whole fly brain, firing live in your browser">
 <meta name="twitter:description" content="The whole fruit-fly brain (138,639 neurons, 15 million connections) simulated live in your browser with the Shiu et al. 2024 model. Press sugar and watch the proboscis motor neuron fire.">
 <meta name="twitter:image" content="https://flybrain.teshnizi.dev/og.jpg">
+<meta name="twitter:image:alt" content="The title 'The whole fly brain, firing live in this tab' above a glowing point cloud of the fruit-fly brain.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%276%27 fill=%27%230e1117%27/%3E%3Ccircle cx=%2716%27 cy=%2716%27 r=%275%27 fill=%27%23f59e0b%27/%3E%3Ccircle cx=%2716%27 cy=%2716%27 r=%2711%27 fill=%27none%27 stroke=%27%23f59e0b%27 stroke-opacity=%27.45%27/%3E%3C/svg%3E">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap"></noscript>
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="stylesheet" href="style.css">
+<script>
+// Capability gate and watchdog. Runs as a classic script so it still works where ES modules, import maps or WebGL2 are missing.
+(function () {
+  var W = window;
+  W.__fbFallback = function (why) {
+    var el = document.getElementById('fallback'); if (!el) return;
+    document.getElementById('fbWhy').textContent = why;
+    el.hidden = false; document.documentElement.classList.add('fb-fallback');
+    var ld = document.getElementById('loading'); if (ld) ld.style.display = 'none';
+  };
+  var missing = [];
+  try { var c = document.createElement('canvas'); if (!W.WebGL2RenderingContext || !c.getContext('webgl2')) missing.push('WebGL2'); } catch (e) { missing.push('WebGL2'); }
+  if (!W.DecompressionStream) missing.push('DecompressionStream (Safari 16.4 or newer)');
+  if (!W.Worker) missing.push('Web Workers');
+  if (!('noModule' in HTMLScriptElement.prototype) || !(HTMLScriptElement.supports && HTMLScriptElement.supports('importmap'))) missing.push('ES modules with import maps');
+  if (missing.length) { W.__fbGateFailed = true; W.addEventListener('DOMContentLoaded', function () { W.__fbFallback('This browser lacks ' + missing.join(', ') + '.'); }); return; }
+  // module graph never started (CDN blocked, offline, script error): say so instead of leaving a half page
+  setTimeout(function () { if (!W.__fbBooted && !W.__fbGateFailed) W.__fbFallback('The page scripts did not load (offline or blocked network).'); }, 20000);
+})();
+</script>
 <script type="importmap">
 { "imports": {
   "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js",
@@ -43,7 +67,7 @@
 <header class="titleblock">
   <p class="kicker"><span class="dot"></span>FLYBRAIN&nbsp;LIVE<span class="sep">/</span>WHOLE-BRAIN SIMULATION</p>
   <h1>The whole fly brain,<br>firing live in this tab.</h1>
-  <p class="sub"><b id="nN">138,639</b> neurons and <b id="nE">15.1 million</b> connections from the FlyWire connectome, simulated with the Shiu&nbsp;et&nbsp;al. 2024 model. Press a taste.</p>
+  <p class="sub"><b id="nN">138,639</b> neurons and <b id="nE">15.1 million</b> connections from the FlyWire connectome, simulated with the Shiu&nbsp;et&nbsp;al. 2024 model. Press a taste.<span id="liteNote" class="lite-note" hidden> Lite graph (86&nbsp;% of synapses). <a href="?graph=full">Use the full 30.7&nbsp;MB graph</a></span></p>
   <ul class="legend" aria-label="Legend">
     <li><i class="lg lg-e"></i>excitatory spike</li>
     <li><i class="lg lg-i"></i>inhibitory spike</li>
@@ -53,6 +77,7 @@
 
 <nav class="topright" aria-label="Page">
   <button id="btnFocus" class="chip" type="button" title="Fly to the feeding circuit (F)"><span>Focus feeding circuit</span><kbd>F</kbd></button>
+  <button id="btnPauseTop" class="chip chip-pause" type="button" aria-pressed="false"><span>Pause</span></button>
   <button id="btnAbout" class="chip chip-solid" type="button" aria-controls="drawer" aria-expanded="false"><span>About &amp; validation</span><kbd>I</kbd></button>
 </nav>
 
@@ -122,11 +147,23 @@
     <p class="ld-title" id="ldTitle">Placing 138,639 neurons&hellip;</p>
     <div class="ld-bar"><i id="ldFill"></i></div>
     <p class="micro mute" id="ldNote">connectome 30.7 MB, decoded locally</p>
+    <button id="ldStart" class="chip chip-solid ld-start" type="button" hidden>Load the simulation</button>
   </div>
 </div>
 
-<aside id="drawer" class="drawer" aria-hidden="true" aria-label="About, validation and limits" tabindex="-1">
-  <button id="btnClose" class="close" type="button" aria-label="Close">&times;</button>
+<section id="fallback" class="fallback" hidden aria-labelledby="fbTitle">
+  <div class="fb-inner">
+    <p class="micro">FLYBRAIN&nbsp;LIVE</p>
+    <h2 id="fbTitle">The live simulation cannot run in this browser.</h2>
+    <p id="fbWhy" class="fb-why"></p>
+    <img src="og.jpg" width="1200" height="630" alt="The whole fruit-fly brain as a glowing point cloud, 138,639 neurons drawn at their positions in the FlyWire connectome.">
+    <p>Open this page in Chrome, Edge, Firefox or Safari 16.4 or newer (use &ldquo;Open in browser&rdquo; from the app menu) to run it. It simulates all 138,639 neurons of the fruit-fly brain with the Shiu&nbsp;et&nbsp;al. 2024 model, checked against the authors&rsquo; Brian2 code.</p>
+    <p><a class="chip chip-solid" href="https://github.com/teshnizi2/flybrain-live">Source, results and recorded video</a></p>
+  </div>
+</section>
+
+<aside id="drawer" class="drawer" inert aria-hidden="true" aria-label="About, validation and limits" tabindex="-1">
+  <button id="btnClose" class="close" type="button" aria-label="Close about panel">&times;</button>
   <div class="dr-scroll">
     <p class="kicker"><span class="dot"></span>ABOUT</p>
     <h2>What you are looking at</h2>
@@ -154,7 +191,7 @@
     <ul>
       <li>Rates on this page are for the paper's chosen inputs (sugar 100&nbsp;Hz is the paper's calibration point; water and bitter at 200&nbsp;Hz are our picks from the dose-response, not the paper's).</li>
       <li>Playback is slowed down (0.05&ndash;1&times; real time) so you can see the cascade. The engine itself runs faster than real time on a recent laptop.</li>
-      <li>This page downloads 30.7&nbsp;MB of connectome. On a slow connection or an older phone use the <a href="?graph=lite">17&nbsp;MB lite version</a>: it drops single-synapse connections (14&nbsp;% of synapses); sugar and bitter results hold, water is ~13&nbsp;% weaker.</li>
+      <li>The full connectome is a 30.7&nbsp;MB download. Phones, Save-Data and slow connections get the <a href="?graph=lite">17&nbsp;MB lite version</a> automatically (<a href="?graph=full">full graph</a>): it drops single-synapse connections (14&nbsp;% of synapses); sugar and bitter results hold, water is ~13&nbsp;% weaker.</li>
       <li>Water GRN list: 7 of the paper's 18 &ldquo;water&rdquo; neurons are labelled sugar neurons in the newer v783 annotation; we use the paper's lists as published. Three neuron IDs changed between FlyWire v630 and v783 and were re-matched by synaptic-partner similarity.</li>
       <li>Cascade lines show, for each neuron that fires, the last presynaptic neuron whose excitatory spike arrived within 15&nbsp;ms. It is a plausible cause, not a proof.</li>
     </ul>
@@ -164,6 +201,6 @@
 </aside>
 
 <script type="module" src="app.js"></script>
-<noscript><p style="position:fixed;inset:auto 16px 16px 16px;color:#e8ecf5;font:14px sans-serif">This page needs JavaScript and WebGL2 to run the simulation.</p></noscript>
+<noscript><p style="position:fixed;inset:auto 16px 16px 16px;color:#e8ecf5;font:14px sans-serif">This page needs JavaScript and WebGL2 to run the simulation. Source and results: https://github.com/teshnizi2/flybrain-live</p></noscript>
 </body>
 </html>
