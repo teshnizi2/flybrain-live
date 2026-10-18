@@ -3,6 +3,8 @@
 import { BrainScene } from './scene.js';
 import { Raster } from './raster.js';
 
+if (window.__fbGateFailed) await new Promise(() => {});   // capability gate in index.html already showed the fallback panel: do not download anything
+window.__fbBooted = true;          // tells the inline watchdog in index.html that the module graph (three.js included) loaded
 const $ = (s) => document.querySelector(s);
 const qs = new URLSearchParams(location.search);
 const CAPTURE = qs.has('capture');
@@ -37,10 +39,48 @@ async function fetchGz(url) {
   return new Response(r.body.pipeThrough(new DecompressionStream('gzip'))).arrayBuffer();
 }
 
+// Which graph to load. Full = 30.7 MB, lite = 17.1 MB (edges with >= 2 synapses). Lite is chosen for low-memory devices, Save-Data /
+// slow connections and phones (touch-only, small screen); ?graph=full or ?graph=lite overrides.
+const conn = navigator.connection || {};
+const slowNet = !!conn.saveData || /^(slow-2g|2g|3g)$/.test(conn.effectiveType || '');
+const phone = matchMedia('(pointer: coarse)').matches && !matchMedia('(any-pointer: fine)').matches && Math.min(screen.width, screen.height) <= 600;
+let lite = qs.get('graph') === 'lite' || (qs.get('graph') !== 'full' && ((navigator.deviceMemory && navigator.deviceMemory <= 2) || slowNet || phone));
+let retriedLite = false;
+
+function startWorker() {
+  worker = new Worker('worker.js', { type: 'module' });
+  worker.onmessage = onWorker;
+  worker.onerror = (e) => workerFailed(e.message || 'worker error');
+  worker.onmessageerror = () => workerFailed('worker message error');
+  worker.postMessage({ type: 'init', graphUrl: lite ? 'data/graph_lite.fbg.gz' : 'data/graph_full.fbg.gz', key, seed: +(qs.get('seed') ?? 1), capture: CAPTURE });
+  if (lite) { $('#nE').textContent = '7.6 million'; $('#liteNote').hidden = false; }
+  let lastLoaded = -1, stalled = 0;           // a slow link gets a plain hint, not a silent bar
+  const t = setInterval(() => {
+    if (state.ready || !worker) { clearInterval(t); return; }
+    if (++stalled === 4 && !lite) $('#ldNote').innerHTML = 'Slow connection? <a href="?graph=lite">Load the lite graph (17 MB)</a>';
+  }, 5000);
+}
+// A failed allocation or download of the full graph: retry once with the lite graph before giving up.
+function workerFailed(msg) {
+  if (!state.ready && !lite && !retriedLite) {
+    retriedLite = true; lite = true; worker?.terminate();
+    setLoading('Retrying with the lite graph…', 0.12, `the full graph did not load (${String(msg).slice(0, 80)})`);
+    startWorker(); return;
+  }
+  fail(msg);
+}
+
 async function boot() {
-  if (!window.WebGL2RenderingContext) throw new Error('WebGL2 is required');
   setLoading('Placing 138,639 neurons…', 0.02);
   [meta, ref] = await Promise.all([fetchJson('data/meta.json'), fetchJson('data/reference.json').catch(() => null)]);
+  key = meta.key;
+  const consent = !CAPTURE && qs.get('graph') !== 'full' && slowNet && !qs.has('autostart');
+  if (consent) {                              // metered or slow connection: ask before the big download
+    setLoading('Ready to load', 0.1, `${lite ? '17' : '31'} MB connectome, decoded locally`);
+    const b = $('#ldStart'); b.hidden = false; b.textContent = `Load the simulation (${lite ? '17' : '31'} MB)`;
+    await new Promise(res => b.addEventListener('click', () => { b.hidden = true; res(); }, { once: true }));
+  }
+  startWorker();                              // the graph download overlaps with the positions download below
   const buf = await fetchGz('data/neurons.bin.gz');
   setLoading('Placing 138,639 neurons…', 0.1);
   const N = meta.N, S = meta.sections;
@@ -51,9 +91,9 @@ async function boot() {
   const lo = meta.bbox_um.lo, hi = meta.bbox_um.hi;
   const pos = new Float32Array(N * 3);
   for (let i = 0; i < N; i++) for (let a = 0; a < 3; a++) pos[3 * i + a] = (lo[a] + q[3 * i + a] / 65535 * (hi[a] - lo[a])) / 100;   // 1 scene unit = 100 um
-  key = meta.key;
 
-  scene = new BrainScene($('#gl'), { n: N, pos, cls, sign: sgn, nt, capture: CAPTURE, maxDpr: qs.has('dpr') ? +qs.get('dpr') : 2 });
+  scene = new BrainScene($('#gl'), { n: N, pos, cls, sign: sgn, nt, capture: CAPTURE, maxDpr: qs.has('dpr') ? +qs.get('dpr') : (phone ? 1.5 : 2) });
+  $('#gl').addEventListener('webglcontextlost', (e) => { e.preventDefault(); fail('graphics context lost'); });
   scene.setMarkers([{ kind: 0, ids: key.sugar }, { kind: 1, ids: key.water }, { kind: 2, ids: key.bitter }, { kind: 3, ids: [key.mn9_contra] }, { kind: 4, ids: [key.mn9_ipsi] }]);
   { // visual tuning overrides: ?base=0.4&size=2&boost=14&gain=1.5&tau=14&bloom=1&bloomR=.5&bloomT=.2&lineA=.5
     const U = scene.pointUniforms, g = (k) => (qs.has(k) ? +qs.get(k) : null);
@@ -67,19 +107,14 @@ async function boot() {
   homeView();
   requestAnimationFrame(frameLoop);
 
-  setLoading('Downloading the connectome…', 0.12, 'FlyWire v783, 15.1 M connections, 30.7 MB (gzip), decoded locally');
-  const lite = qs.get('graph') === 'lite' || (navigator.deviceMemory && navigator.deviceMemory <= 2);
-  worker = new Worker('worker.js', { type: 'module' });
-  worker.onmessage = onWorker;
-  worker.onerror = (e) => fail(e.message || 'worker error');
-  worker.postMessage({ type: 'init', graphUrl: lite ? 'data/graph_lite.fbg.gz' : 'data/graph_full.fbg.gz', key, seed: +(qs.get('seed') ?? 1), capture: CAPTURE });
-  if (lite) $('#nE').textContent = '7.6 million';
+  setLoading('Downloading the connectome…', 0.12, `FlyWire v783, ${lite ? '7.6 M connections, 17.1' : '15.1 M connections, 30.7'} MB (gzip), decoded locally`);
   fillAbout();
 }
 
 function fail(msg) {
-  setLoading('This browser could not start the simulation.', 1, String(msg));
-  $('#ldFill').style.background = '#ff5c8a';
+  console.error(msg);
+  if (window.__fbFallback) window.__fbFallback(`This browser could not start the simulation (${String(msg).slice(0, 140)}).`);
+  else setLoading('This browser could not start the simulation.', 1, String(msg));
 }
 
 function onWorker(e) {
@@ -98,12 +133,13 @@ function onWorker(e) {
     if (CAPTURE) window.__capReady?.();
     const s0 = (qs.get('stim') || '').replace(' ', '+'); if (s0 && PRESETS[s0]) setStim(s0);
   } else if (m.type === 'frame') onFrame(m);
-  else if (m.type === 'error') fail(m.message);
+  else if (m.type === 'error') workerFailed(m.message);
 }
 
 // ------------------------------------------------------------------ simulation stream
 let capWaiters = new Map();
 function onFrame(m) {
+  if (!scene) return;                         // the worker can be ready before the positions have been placed
   const n = m.ids.length;
   const tms = new Float32Array(n);
   for (let k = 0; k < n; k++) tms[k] = m.steps[k] * DT_MS - tBase;
@@ -157,6 +193,7 @@ function wireUI() {
     b.addEventListener('click', () => setSpeed(+b.dataset.speed));
   });
   $('#btnPause').addEventListener('click', togglePause);
+  $('#btnPauseTop').addEventListener('click', togglePause);
   $('#btnReset').addEventListener('click', resetSim);
   $('#btnLines').addEventListener('click', toggleLines);
   $('#btnAbout').addEventListener('click', () => toggleDrawer());
@@ -173,13 +210,19 @@ function wireUI() {
   });
 }
 function setSpeed(v) { state.speed = v; worker?.postMessage({ type: 'speed', value: v }); document.querySelectorAll('[data-speed]').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.speed === v))); }
-function togglePause() { state.paused = !state.paused; $('#btnPause').setAttribute('aria-pressed', String(state.paused)); $('#btnPause span').textContent = state.paused ? 'Play' : 'Pause'; worker?.postMessage({ type: 'pause', value: state.paused }); }
+function togglePause() {
+  state.paused = !state.paused;
+  for (const id of ['#btnPause', '#btnPauseTop']) { $(id).setAttribute('aria-pressed', String(state.paused)); $(id + ' span').textContent = state.paused ? 'Play' : 'Pause'; }
+  document.documentElement.classList.toggle('is-paused', state.paused);
+  scene?.setMotionPaused(state.paused);
+  worker?.postMessage({ type: 'pause', value: state.paused });
+}
 function resetSim() { if (!state.ready) return; worker.postMessage({ type: 'reset', seed: +(qs.get('seed') ?? 1) }); worker.postMessage({ type: 'stim', groups: groupsFor(state.stim) }); }
 function toggleLines() { state.lines = !state.lines; $('#btnLines').setAttribute('aria-pressed', String(state.lines)); scene.setLinesVisible(state.lines); }
 function toggleDrawer(force) {
   const d = $('#drawer'); const open = force ?? !d.classList.contains('open');
-  d.classList.toggle('open', open); d.setAttribute('aria-hidden', String(!open)); $('#btnAbout').setAttribute('aria-expanded', String(open));
-  if (open) d.focus({ preventScroll: true });
+  d.classList.toggle('open', open); d.setAttribute('aria-hidden', String(!open)); d.inert = !open; $('#btnAbout').setAttribute('aria-expanded', String(open));
+  if (open) d.focus({ preventScroll: true }); else if (force === false) $('#btnAbout').focus({ preventScroll: true });
 }
 function homeView() {
   scene.setCamera({ target: scene.vec(0).set(0.0, -0.35, 0.1), distance: scene.homeDist, azimuth: 0.28, polar: 1.28 });
@@ -230,6 +273,9 @@ function wireHover() {
     const now = performance.now(); if (now - last < 60) return; last = now;
     const id = scene.pick(e.clientX, e.clientY);
     if (id < 0) { tip.hidden = true; return; }
+    showTip(id, e.clientX, e.clientY);
+  });
+  function showTip(id, x, y) {
     const ct = tips.ctype[id], name = ct ? meta.types[ct - 1] : 'unlabelled';
     const sc = tips.cls[id] === 255 ? '?' : meta.super_class_names[tips.cls[id]].replace(/_/g, ' ');
     const nt = tips.nt[id] === 255 ? 'unknown transmitter' : meta.nt_names[tips.nt[id]];
@@ -237,9 +283,19 @@ function wireHover() {
     const sign = ['', 'excitatory', 'inhibitory'][signArr[id]] || '';
     const firing = simNow - scene.lastSpike[id] < 40 ? ' <b>spiking</b>' : '';
     tip.innerHTML = `<b>${name}</b>${firing}<br><i>${sc}${sd} &middot; ${nt}${sign ? ' &middot; ' + sign : ''}</i>`;
-    tip.hidden = false; tip.style.left = `${e.clientX}px`; tip.style.top = `${e.clientY}px`;
-  });
+    tip.hidden = false; tip.style.left = `${Math.min(x, innerWidth - 200)}px`; tip.style.top = `${Math.min(y, innerHeight - 80)}px`;
+  }
   cv.addEventListener('pointerleave', () => { tip.hidden = true; });
+  // touch has no hover: a short tap on a neuron shows the same label for a few seconds
+  let down = null, hideT = 0;
+  cv.addEventListener('pointerdown', (e) => { down = e.pointerType === 'mouse' ? null : { x: e.clientX, y: e.clientY, t: performance.now() }; });
+  cv.addEventListener('pointerup', (e) => {
+    if (!down || Math.hypot(e.clientX - down.x, e.clientY - down.y) > 8 || performance.now() - down.t > 400) return;
+    down = null;
+    const id = scene.pick(e.clientX, e.clientY);
+    clearTimeout(hideT); if (id < 0) { tip.hidden = true; return; }
+    showTip(id, e.clientX, e.clientY); hideT = setTimeout(() => { tip.hidden = true; }, 4000);
+  });
 }
 
 // ------------------------------------------------------------------ per-frame

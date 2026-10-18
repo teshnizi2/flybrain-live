@@ -172,7 +172,7 @@ export class BrainScene {
     this._idleTimer = 0;
     controls.addEventListener('start', () => { clearTimeout(this._idleTimer); this.controls.autoRotate = false; this._anim = null; });
     controls.addEventListener('end', () => {
-      if (this.capture || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      if (this.capture || this._motionPaused || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
       this._idleTimer = setTimeout(() => { this.controls.autoRotate = true; }, 4500);
     });
     controls.update();
@@ -187,6 +187,13 @@ export class BrainScene {
     this.resize();
     this._ro = new ResizeObserver(() => this.resize());
     this._ro.observe(canvas);
+  }
+
+  /** Pause control for the slow camera drift (the Pause button also stops the simulation). */
+  setMotionPaused(p) {
+    this._motionPaused = p; clearTimeout(this._idleTimer);
+    if (p) this.controls.autoRotate = false;
+    else if (!this.capture && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) this.controls.autoRotate = true;
   }
 
   resize(w, h) {
