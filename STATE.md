@@ -67,3 +67,9 @@ See README "Reproduce". Quick checks: `npm test`; `node tools/smoke_page.mjs`; `
 
 ## Next step (if any)
 Nothing required. Optional polish: second video cut, brotli precompression if the host supports it, hosting.
+
+## Phone and in-app browser pass (branch mobile-first-load)
+- Graph choice: lite (17.1 MB) is now the default on phones (coarse pointer only, screen <= 600 px), Save-Data / 2g-3g connections and deviceMemory <= 2; `?graph=full` forces the full graph. If the full graph fails to load (memory, network) the worker is restarted once with the lite graph. Save-Data / 2g-3g visitors get a "Load the simulation" button before the download. The engine, data and results are untouched.
+- The graph download now starts as soon as meta.json is in (it overlaps the 2 MB positions download).
+- Capability gate (inline script in index.html): no WebGL2, DecompressionStream, workers or import maps, or scripts not loading within 20 s, shows a panel with the share image and a reason instead of a half page. The engine is plain JS: no WebGPU, SharedArrayBuffer, WASM threads or SIMD are used, so none of them is needed.
+- Touch: 44 px targets, no sticky hover, tap a neuron for its label, Pause chip in the phone nav (it also stops the camera drift), safe-area insets, landscape layout, drawer is `inert` while closed.
