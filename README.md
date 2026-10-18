@@ -1,5 +1,7 @@
 # flybrain-live
 
+**Live demo: <https://flybrain.teshnizi.dev>** (the first load downloads the 30.7 MB graph; devices with 2 GB of RAM or less get the 17.1 MB lite graph) · MIT licence
+
 **A whole fruit-fly brain, simulated live in a browser tab.** All 138,639 neurons of the adult *Drosophila* brain (FlyWire
 public release 783) with their real wiring (15.1 million connections, 54.5 million synapses), driven by the leaky
 integrate-and-fire model of Shiu et al. 2024 (*Nature* 634:210), drawn at each neuron's true 3D position, and **checked

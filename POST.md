@@ -1,5 +1,11 @@
 # POST.md (draft only, never posted)
 
+## Links (deployed 2026-10-18)
+
+- Demo: https://flybrain.teshnizi.dev (first load downloads the 30.7 MB graph; low-memory devices get the 17.1 MB lite graph automatically)
+- Code: https://github.com/teshnizi2/flybrain-live (MIT)
+- The URL is not part of the 108 words. LinkedIn builds the link card from the page's share image (`site/og.jpg`).
+
 ## Draft (108 words)
 
 I simulated a whole fruit-fly brain, live, in a browser tab.
@@ -27,4 +33,4 @@ On my laptop it runs close to real time.
 | all 44,328 spikes reproduced | `results/replay_summary.json` (`tools/replay_check.mjs`, `reference/replay_brian2.py`) |
 | about real time in a tab | `results/browser_speed.json`: 0.9x to 1.4x in the page for sugar, water, sugar + bitter; `results/engine_speed.json`: 2.4x to 3.6x in Node for the four demo stimuli (M4, machine shared with other jobs) |
 
-Attach `media/flybrain-1080x1350.mp4`, or `media/hero.png` as the still. Link to the page only after it is deployed (not done: no publishing in this build).
+Attach `media/flybrain-1080x1350.mp4`, or `media/hero.png` as the still. The page is deployed (see Links above).

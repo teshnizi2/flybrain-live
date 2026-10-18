@@ -1,12 +1,12 @@
 # flybrain-live: STATE
 
-Handoff note. Update after every step. Last updated: 2026-10-17 15:05 (session 1, resumed after a process crash; all build steps done, final verification in progress).
+Handoff note. Update after every step. Last updated: 2026-10-18 (deployed and published, see "Deployed and published"; the build notes below date from 2026-10-17).
 
 ## Goal
 Whole adult fruit-fly brain (FlyWire v783, 138,639 neurons, 15.09 M connections) simulated live in a
 browser tab with the Shiu et al. 2024 (Nature 634:210) LIF model, drawn at real 3D neuron positions,
-validated against the paper's own Brian2 code. See BRIEF.md and ../visual-series-RULES.md (local only:
-no ALICE, no publishing, no push; commits have no attribution lines).
+validated against the paper's own Brian2 code. See BRIEF.md and ../visual-series-RULES.md (build rules at the time: local only,
+no ALICE, no publishing; publishing was approved by Reza on 2026-10-18; commits have no attribution lines).
 
 ## Status: DONE except final polish/verification
 Default positions = cell bodies (`?pos=anchor` for backbone anchors; chosen after a side-by-side render, soma shows the real brain silhouette). Everything in BRIEF "Done means" exists and is verified (see README for the tables, all generated from results/):
@@ -49,14 +49,21 @@ Engine speed (Node, M4 shared with other jobs): medians 1.3x-3.6x real time over
 ## How to resume / regenerate
 See README "Reproduce". Quick checks: `npm test`; `node tools/smoke_page.mjs`; `python tools/build_readme.py`.
 
+## Deployed and published (2026-10-18, approved by Reza)
+- Live: https://flybrain.teshnizi.dev (also https://flybrain-live.vercel.app). Vercel project `flybrain-live` (team hmkhd2-1413s-projects, `prj_VM3GmPOc6jkQ6KhHEYT2chIIka9B`), static deploy of `site/`, no build step; the subdomain is attached to the project, so every production deploy updates it.
+- Code: https://github.com/teshnizi2/flybrain-live (public, MIT licence, chosen by Reza).
+- Redeploy after changing `site/`: `cd site && vercel deploy --prod --yes --scope hmkhd2-1413s-projects` (CLI logged in as rezateshnizi; `site/.vercel/` is gitignored), then `git push`.
+- Checked live: all 17 served files are byte-identical to `site/` (SHA-256, including the 30.7 MB graph); in the in-app browser the page ran the simulation, Sugar gave MN9 69 Hz with no console errors, and the 375 px layout has no horizontal scroll. The in-app pane was hidden, so its 0.3x real-time reading is not a speed measurement (the README numbers stand).
+- Share card: `site/og.jpg` (1200x630, a crop of `media/hero.png`) plus Open Graph, Twitter and canonical tags in `site/index.html`.
+- Hosting limits: Vercel Hobby includes 100 GB/month of Fast Data Transfer for the whole team (it also serves www.studypuff.com); sustained overage can lead to paused deployments (Vercel warns first; fix = upgrade to Pro or cut traffic). One first visit transfers about 33 MB here (30.7 MB graph + 2.0 MB positions and labels), so roughly 3,000 first visits use the allowance. If a post takes off, move the heavy files to a host with free egress or upgrade the team to Pro.
+
 ## Open for Reza
-1. Deployment: not done (rules: no publishing). The site is static (`site/`, ~33 MB of data, 17 MB lite); needs a host that serves `.gz` as binary
-   (no special headers needed, the page gunzips itself). Fonts/three.js come from Google Fonts/jsDelivr.
+1. Deployment: DONE 2026-10-18 (see above). The host serves the `.gz` files as binary and the page gunzips itself; fonts and three.js come from Google Fonts and jsDelivr.
 2. Water and Bitter demo input rates (200 Hz) are my picks from the dose-response; change `PRESETS` in `site/app.js` and `REF_KEY` + `tools/build_page_data.py` if you prefer others.
 3. The ~1080x1080 video cut was not made (layout is portrait-first); the 4:5 video and a 2160x2700 still exist.
 4. The paper's water list vs the v783 annotation (7 of 18 labelled sugar) is a small honesty footnote in the About drawer and README; decide if you want it in the post.
 
-5. Licence for this repository's own code is not chosen (package.json says UNLICENSED, README says not chosen yet); the upstream code/data keep MIT / CC-BY 4.0.
+5. Licence: MIT, chosen by Reza on 2026-10-18 (`LICENSE`, `package.json`, README); the upstream code/data keep MIT / CC-BY 4.0.
 
 ## Next step (if any)
 Nothing required. Optional polish: second video cut, brotli precompression if the host supports it, hosting.
