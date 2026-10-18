@@ -249,4 +249,4 @@ node tools/smoke_page.mjs && python tools/build_readme.py
 * Connectome: FlyWire, Dorkenwald et al., *Nature* 634 (2024) and Schlegel et al., *Nature* 634 (2024); annotations from `flyconnectome/flywire_annotations` (CC-BY 4.0). Attribution is required.
 * Model and connectivity file: Shiu, Sterne, Spiller et al., "A Drosophila computational brain model reveals sensorimotor processing", *Nature* 634:210-219 (2024), doi:10.1038/s41586-024-07763-9; code `philshiu/Drosophila_brain_model` (MIT).
 * Reference simulator: Brian2. Rendering: three.js 0.170.0. Type: Inter Tight, JetBrains Mono (Google Fonts, OFL).
-* This repository's own code: licence not chosen yet (the third-party code and data above keep theirs).
+* This repository's own code is released under the MIT licence (`LICENSE`). The third-party code and data above keep their own terms; in particular the packed graph in `site/data/` is derived from FlyWire (CC-BY 4.0) via the Shiu et al. connectivity file, so it keeps the attribution requirement above.
