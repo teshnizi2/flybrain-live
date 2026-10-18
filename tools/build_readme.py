@@ -74,13 +74,15 @@ contra_note = (f"yes in {len(_active) - len(_flip)} of {len(_active)} conditions
 
 md = f"""# flybrain-live
 
+**Live demo: <https://flybrain.teshnizi.dev>** (the first load downloads the {sizes['graph_full']['gzip9']/1e6:.1f} MB graph; phones, Save-Data or slow connections and devices with 2 GB of RAM or less get the {sizes['graph_lite_ge2']['gzip9']/1e6:.1f} MB lite graph) · MIT licence
+
 **A whole fruit-fly brain, simulated live in a browser tab.** All {N:,} neurons of the adult *Drosophila* brain (FlyWire
 public release 783) with their real wiring ({E/1e6:.1f} million connections, 54.5 million synapses), driven by the leaky
 integrate-and-fire model of Shiu et al. 2024 (*Nature* 634:210), drawn at each neuron's true 3D position, and **checked
 against the authors' own Brian2 code**. Press *Sugar*: 21 taste neurons fire, activity cascades through the wiring, and
 the motor neuron that extends the proboscis (MN9) starts firing, the paper's headline prediction. Add *Bitter* and MN9 goes silent.
 
-![hero](media/hero.png)
+![The fruit-fly brain as a glowing point cloud, the taste-to-proboscis circuit firing after pressing Sugar](media/hero.png)
 
 Video (20 s, 1080x1350): [`media/flybrain-1080x1350.mp4`](media/flybrain-1080x1350.mp4). Phone layout (375 px): [`media/phone-375.png`](media/phone-375.png).
 
@@ -93,11 +95,11 @@ cd site && python3 -m http.server 8000      # then open http://localhost:8000
 Needs a browser with WebGL2 and `DecompressionStream` (Chrome/Edge 80+, Safari 16.4+, Firefox 113+). The page streams
 {sizes['graph_full']['gzip9']/1e6:.1f} MB (the connectome, gzip) plus {sizes['neurons']['gzip9']/1e6:.1f} MB (positions and labels), decodes it in a worker
 (about {speed['graph']['gunzip_ms'] + speed['graph']['decode_ms']:,} ms in Node) and holds ~{speed['graph']['typed_array_mb']:.0f} MB of typed arrays. `?graph=lite` loads the
-{sizes['graph_lite_ge2']['gzip9']/1e6:.1f} MB thresholded graph (edges with at least 2 synapses; selected automatically on devices reporting 2 GB of RAM or less).
+{sizes['graph_lite_ge2']['gzip9']/1e6:.1f} MB thresholded graph (edges with at least 2 synapses; selected automatically on phones, Save-Data or slow connections and devices reporting 2 GB of RAM or less; `?graph=full` forces the full graph).
 Other URL options: `?stim=sugar|water|bitter|sugar%2Bbitter`, `?speed=0.05|0.1|0.25|1`, `?pos=anchor` (backbone anchor points instead of cell bodies: a sparser, star-map look), `?lines=0`.
 
 Controls: keys `1`-`4` stimuli, `0` clear, `Space` pause, `R` reset, `F` fly to the feeding circuit, `L` cascade lines, `I` about/validation.
-Hover a neuron for its cell type, class and transmitter. Playback is slowed (default 0.1x real time) so the cascade is visible.
+Hover (mouse) or tap (touch) a neuron for its cell type, class and transmitter. Playback is slowed (default 0.1x real time) so the cascade is visible.
 
 ## What the numbers say
 
@@ -210,7 +212,7 @@ Dropping every single-synapse edge keeps {sizes['graph_lite_ge2']['synapse_fract
 |---|---|---|---|---|
 {chr(10).join(lt_rows)}
 
-The sugar and bitter results survive; water is about 13 % weaker. That is why the lite graph is an option, not the default.
+The sugar and bitter results survive; water is about 13 % weaker. That is why the lite graph is optional on desktop; phones get it by default because the download is 13.6 MB smaller.
 
 ## Media
 

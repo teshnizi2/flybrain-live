@@ -1,6 +1,6 @@
 # flybrain-live
 
-**Live demo: <https://flybrain.teshnizi.dev>** (the first load downloads the 30.7 MB graph; devices with 2 GB of RAM or less get the 17.1 MB lite graph) · MIT licence
+**Live demo: <https://flybrain.teshnizi.dev>** (the first load downloads the 30.7 MB graph; phones, Save-Data or slow connections and devices with 2 GB of RAM or less get the 17.1 MB lite graph) · MIT licence
 
 **A whole fruit-fly brain, simulated live in a browser tab.** All 138,639 neurons of the adult *Drosophila* brain (FlyWire
 public release 783) with their real wiring (15.1 million connections, 54.5 million synapses), driven by the leaky
@@ -8,7 +8,7 @@ integrate-and-fire model of Shiu et al. 2024 (*Nature* 634:210), drawn at each n
 against the authors' own Brian2 code**. Press *Sugar*: 21 taste neurons fire, activity cascades through the wiring, and
 the motor neuron that extends the proboscis (MN9) starts firing, the paper's headline prediction. Add *Bitter* and MN9 goes silent.
 
-![hero](media/hero.png)
+![The fruit-fly brain as a glowing point cloud, the taste-to-proboscis circuit firing after pressing Sugar](media/hero.png)
 
 Video (20 s, 1080x1350): [`media/flybrain-1080x1350.mp4`](media/flybrain-1080x1350.mp4). Phone layout (375 px): [`media/phone-375.png`](media/phone-375.png).
 
@@ -21,11 +21,11 @@ cd site && python3 -m http.server 8000      # then open http://localhost:8000
 Needs a browser with WebGL2 and `DecompressionStream` (Chrome/Edge 80+, Safari 16.4+, Firefox 113+). The page streams
 30.7 MB (the connectome, gzip) plus 2.0 MB (positions and labels), decodes it in a worker
 (about 316 ms in Node) and holds ~91 MB of typed arrays. `?graph=lite` loads the
-17.1 MB thresholded graph (edges with at least 2 synapses; selected automatically on devices reporting 2 GB of RAM or less).
+17.1 MB thresholded graph (edges with at least 2 synapses; selected automatically on phones, Save-Data or slow connections and devices reporting 2 GB of RAM or less; `?graph=full` forces the full graph).
 Other URL options: `?stim=sugar|water|bitter|sugar%2Bbitter`, `?speed=0.05|0.1|0.25|1`, `?pos=anchor` (backbone anchor points instead of cell bodies: a sparser, star-map look), `?lines=0`.
 
 Controls: keys `1`-`4` stimuli, `0` clear, `Space` pause, `R` reset, `F` fly to the feeding circuit, `L` cascade lines, `I` about/validation.
-Hover a neuron for its cell type, class and transmitter. Playback is slowed (default 0.1x real time) so the cascade is visible.
+Hover (mouse) or tap (touch) a neuron for its cell type, class and transmitter. Playback is slowed (default 0.1x real time) so the cascade is visible.
 
 ## What the numbers say
 
@@ -199,7 +199,7 @@ Dropping every single-synapse edge keeps 86 % of synapses. Effect on MN9, JS eng
 | sugar_100__bitter_200 | 0.1 | 0.1 | +0.0 | -2.7 % |
 | sugar_100__bitter_100 | 4.6 | 4.8 | +0.2 | +0.0 % |
 
-The sugar and bitter results survive; water is about 13 % weaker. That is why the lite graph is an option, not the default.
+The sugar and bitter results survive; water is about 13 % weaker. That is why the lite graph is optional on desktop; phones get it by default because the download is 13.6 MB smaller.
 
 ## Media
 
@@ -251,4 +251,4 @@ node tools/smoke_page.mjs && python tools/build_readme.py
 * Connectome: FlyWire, Dorkenwald et al., *Nature* 634 (2024) and Schlegel et al., *Nature* 634 (2024); annotations from `flyconnectome/flywire_annotations` (CC-BY 4.0). Attribution is required.
 * Model and connectivity file: Shiu, Sterne, Spiller et al., "A Drosophila computational brain model reveals sensorimotor processing", *Nature* 634:210-219 (2024), doi:10.1038/s41586-024-07763-9; code `philshiu/Drosophila_brain_model` (MIT).
 * Reference simulator: Brian2. Rendering: three.js 0.170.0. Type: Inter Tight, JetBrains Mono (Google Fonts, OFL).
-* This repository's own code is released under the MIT licence (`LICENSE`). The third-party code and data above keep their own terms; in particular the packed graph in `site/data/` is derived from FlyWire (CC-BY 4.0) via the Shiu et al. connectivity file, so it keeps the attribution requirement above.
+* This repository's own code: licence not chosen yet (the third-party code and data above keep theirs).
